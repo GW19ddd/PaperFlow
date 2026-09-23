@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>paperflow-desktop · macOS 使用教程</title>
+<title>PaperFlow · PDF 翻译工作台使用教程</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -96,12 +96,10 @@
   footer p{margin:6px 0}
 </style>
 </head>
-<body>
-
-<nav class="top">
+<body><nav class="top">
   <div class="inner">
     <span class="me-logo">PaperFlow</span>
-    <span class="brand">paperflow-desktop<span class="ver">macOS · v2.3.9</span></span>
+    <span class="brand">PDF 翻译工作台<span class="ver">v1.0.0</span></span>
     <a href="#install" class="tab">安装</a>
     <a href="#sec-translate" class="tab">翻译</a>
     <a href="#sec-settings" class="tab">设置</a>
@@ -111,7 +109,7 @@
     <a href="#ocr" class="tab">扫描件</a>
     <a href="#faq" class="tab">FAQ</a>
     <span class="spacer"></span>
-    <a href="https://github.com/AaronGIG/pdf2zh-desktop">GitHub ↗</a>
+    <a href="https://github.com/GW19ddd/PaperFlow">GitHub ↗</a>
   </div>
 </nav>
 
@@ -131,16 +129,18 @@
 <div class="wrap">
 
   <header class="hero">
-    <div class="eyebrow">macOS Edition · v2.3.9</div>
+    <div class="eyebrow">v1.0.0 · Windows / macOS</div>
     <h1>把外文论文翻成<span class="grad">中文 PDF</span><br>排版照旧、公式不糊</h1>
-    <p class="sub">paperflow-desktop 是一款 macOS 学术 PDF 翻译工具，保留原始排版、公式、图表，支持多家翻译服务，自带阅读器与 AI 助手。本教程用真实截图带你走完每一步操作。</p>
+    <p class="sub">PaperFlow 是一款开箱即用的学术 PDF 翻译工具：保留原始排版、公式与图表，内置 20+ 翻译服务，自带阅读器与 AI 助手。本教程用真实截图带你走完每一步操作。</p>
     <div class="meta">
+      <span>🪟 Windows / macOS</span>
       <span>📐 保留排版</span>
       <span>🧮 公式不糊</span>
       <span>📚 批量翻译</span>
       <span>🪄 AI 助手</span>
       <span>🌐 20+ 翻译服务</span>
       <span>📖 内置阅读器</span>
+      <span>🔗 Zotero 联动</span>
     </div>
   </header>
 
@@ -149,29 +149,47 @@
       <span class="num">START</span>
       <h2>安装与启动</h2>
     </div>
-    <p class="lead">从 GitHub Release 下载 <code>paperflow-desktop-mac-vx.x.x.zip</code>，解压后把 <code>paperflow-desktop.app</code> 拖到「应用程序」即可。首次启动如果系统提示「无法验证开发者」，请去 <strong>系统设置 → 隐私与安全性</strong> 点「仍要打开」。</p>
+    <p class="lead">从 GitHub Releases 下载压缩包，解压即用 —— 不需要 Python、不需要配环境。<strong>千万不要点 Source code</strong>，那是源码，下载解压双击是跑不起来的。</p>
+
+    <div class="grid">
+      <div class="card">
+        <div class="top"><div class="icon" style="background:#0078D6">🪟</div><h5>Windows</h5></div>
+        <p class="desc">下载 <code>paperflow-desktop-win-v1.0.0.zip</code> → 解压 → 双击 <strong><code>paperflow.exe</code></strong>。<br>想建桌面图标：先双击一次 <code>install.bat</code>（会顺带检查 VC++ 运行库）。</p>
+        <div class="links">
+          <a href="https://github.com/GW19ddd/PaperFlow/releases/latest">下载最新版 ↗</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="top"><div class="icon" style="background:#000">🍎</div><h5>macOS</h5></div>
+        <p class="desc">下载 <code>paperflow-desktop-mac-v1.0.0.zip</code> → 解压 → 把 <strong><code>paperflow.app</code></strong> 拖到「应用程序」→ 双击启动。</p>
+        <div class="links">
+          <a href="https://github.com/GW19ddd/PaperFlow/releases/latest">下载最新版 ↗</a>
+        </div>
+      </div>
+    </div>
+
     <div class="notice info">
       <span class="ico">ⓘ</span>
       <div>
-        <strong>系统要求：</strong> macOS 12 (Monterey) 及以上 · Apple Silicon / Intel 双架构 · 首次启动会下载 ~80MB 字体与字典缓存到 <code>~/.cache/babeldoc</code>。
+        <strong>系统要求：</strong> Windows 10/11 64 位 · macOS 13 (Ventura) 及以上（Apple Silicon / Intel 双架构）· 约 750MB 磁盘空间 · 首次启动会下载约 80MB 字体与字典缓存到 <code>~/.cache/babeldoc</code>。
       </div>
     </div>
     <div class="notice warn">
       <span class="ico">⚠</span>
       <div>
-        <strong>提示「文件已损坏 / 已损坏，无法打开」？</strong> 不是真的损坏，是 macOS Gatekeeper 拦了未签名 App。终端跑一行解决：<br>
+        <strong>macOS 提示「已损坏，无法打开」？</strong> 不是真的损坏，是 Gatekeeper 拦了未签名的 App。终端跑一行解决：<br>
         <code>xattr -cr /Applications/paperflow.app</code><br>
-        如果还在 Downloads 没拖：<code>xattr -cr ~/Downloads/paperflow.app</code>。也可以 Finder 里<strong>右键 → 打开</strong>（不是双击），弹窗点「打开」即可。
+        也可以 Finder 里<strong>右键 → 打开</strong>（不是双击），弹窗点「打开」即可。
       </div>
     </div>
     <div class="notice tip">
       <span class="ico">🎯</span>
       <div>
         <strong>最佳适用场景 — 下载前请看一眼</strong><br>
-        <span style="color:#1d6d3a">✅ 表现最稳：</span>学术论文（IEEE / Springer / Nature / arXiv）、技术文档、白皮书、财报、标准教材、政策文件、专利<br>
-        <span style="color:#7a5a00">⚠️ 可用但效果一般：</span>课本、画册、杂志（图文混排重、艺术字体多）— 译文可能错位、艺术标题可能被跳过；扫描件（建议先 OCR 加文字层）<br>
-        <span style="color:#a8261c">❌ 不推荐：</span>儿童绘本 / 漫画 / 纯手写笔记 / 重设计版面（这类 PDF 文字嵌图为主，引擎能力之外）<br>
-        <em style="color:#666;font-size:13px">paperflow 引擎专为「标准学术排版」设计，复杂版面属于已知能力边界。</em>
+        <span style="color:#1d6d3a">✅ 表现最稳：</span>学术论文（IEEE / Springer / Nature / arXiv）、技术文档、白皮书、财报、教材、专利、政策文件<br>
+        <span style="color:#7a5a00">⚠️ 可用但效果一般：</span>课本、画册、杂志（图文混排重、艺术字体多）；扫描件（建议先 OCR 加文字层）<br>
+        <span style="color:#a8261c">❌ 不推荐：</span>儿童绘本 / 漫画 / 纯手写笔记 / 重设计版面（文字嵌图为主，超出引擎能力）<br>
+        <em style="color:#666;font-size:13px">PaperFlow 的翻译引擎专为「标准学术排版」设计，复杂版面属于已知能力边界。</em>
       </div>
     </div>
   </section>
@@ -181,7 +199,7 @@
       <span class="num">PAGE 01</span>
       <h2>① 翻译页 — 主战场</h2>
     </div>
-    <p class="lead">这是你日常用得最多的页面。把 PDF 拖到上方的虚线框，挑一个翻译服务，点最下面的「开始翻译」就行。所有选项都有合理默认，第一次用直接拖文件 + 点开始即可出结果。</p>
+    <p class="lead">这是你日常用得最多的页面。把 PDF 拖进上方的虚线框，挑一个翻译服务，点最下面的「开始翻译」就行。所有选项都有合理默认，第一次用直接拖文件 + 点开始即可出结果。</p>
 
     <div class="notice tip" style="margin:16px 0 24px">
       <span class="ico">🎯</span>
@@ -218,17 +236,17 @@
       <div class="step"><div class="badge">2</div><div class="body"><h4>拖放区</h4><p>把一个或多个 PDF 直接拖进来，也可以点击选择文件。<strong>支持批量</strong>：拖进 5 个文件就排队翻 5 个。</p></div></div>
       <div class="step"><div class="badge">3</div><div class="body"><h4>源语言</h4><p>原文语言。一般保持 <code>English</code>。如果你翻日文/德文，下拉选对应语种 — 选错会导致句子拆分错乱。</p></div></div>
       <div class="step"><div class="badge">4</div><div class="body"><h4>目标语言</h4><p>翻成什么语种。默认 <code>中文(简体)</code>，可改繁中、日、韩、英、俄、法、德、意、葡、西、阿等 20+ 语言。</p></div></div>
-      <div class="step"><div class="badge">5</div><div class="body"><h4>翻译服务</h4><p>核心选项。Google 免费但慢且需翻墙；DeepSeek/通义千问/智谱用 API Key，质量好且便宜。<a href="#api">→ 怎么选见下文</a></p></div></div>
+      <div class="step"><div class="badge">5</div><div class="body"><h4>翻译服务</h4><p>核心选项。Google / Bing 免费无需配置；DeepSeek / 通义千问 / 智谱 / 阿里 qwen-mt 用 API Key，质量好且便宜。<a href="#api">→ 怎么选见下文</a></p></div></div>
       <div class="step"><div class="badge">6</div><div class="body"><h4>页码范围</h4><p>默认全部。也可填 <code>1-10</code> 只翻前 10 页，或 <code>1,3,5-8</code> 跳着翻。<strong>建议先小范围试翻</strong>验证服务可用。</p></div></div>
       <div class="step"><div class="badge">7</div><div class="body"><h4>输出格式</h4><p>三选一：<strong>左右并排</strong>（推荐 · 原文译文同页对照）/ <strong>双语对照</strong>（先原文页后译文页）/ <strong>仅译文</strong>（只输出中文版）。</p></div></div>
-      <div class="step"><div class="badge">8</div><div class="body"><h4>线程数</h4><p>同时跑多少个翻译请求。免费服务别开太大（容易封 IP），DeepSeek/通义建议 <code>16-32</code>，长文本翻得快。</p></div></div>
+      <div class="step"><div class="badge">8</div><div class="body"><h4>线程数</h4><p>同时跑多少个翻译请求。免费服务别开太大（容易限流 / 封 IP），已充值的 DeepSeek / 通义建议 <code>8-16</code>，长文本翻得快。</p></div></div>
       <div class="step"><div class="badge">9</div><div class="body"><h4>分块翻译 / 扫描件 / 表格 / OCR</h4><p><strong>4 个特殊场景开关</strong>，普通 PDF <b>全部不勾</b>就好。<a href="#options">→ 什么时候该勾（详细说明）</a></p></div></div>
       <div class="step"><div class="badge">10</div><div class="body"><h4>开始翻译</h4><p>点这里开跑。状态会变成「翻译中…」并显示进度条。完成后会自动跳到「阅读」页预览结果。<strong>骰子按钮</strong>：随便从内置示例论文里抽一篇试翻，验证流程。</p></div></div>
     </div>
 
     <div class="notice tip">
       <span class="ico">★</span>
-      <div><strong>第一次用？</strong> 拖一个 5-10 页的外文论文进来，服务选 <code>Google 翻译</code>（不需要 Key），点开始 — 30 秒后你就能看到中外对照的 PDF 了。然后再回头去配 DeepSeek 提升质量。</div>
+      <div><strong>第一次用？</strong> 拖一个 5-10 页的外文论文进来，服务选 <code>Google 翻译</code>（不需要 Key），点开始 — 30 秒后你就能看到中外对照的 PDF 了。满意后再去配 DeepSeek 提升质量。</div>
     </div>
   </section>
 
@@ -255,17 +273,17 @@
     </div>
 
     <div class="steps">
-      <div class="step"><div class="badge">1</div><div class="body"><h4>翻译服务选择</h4><p>下拉选你要配的服务。<strong>每选一个服务，下面的 Key/URL/Model 字段会切换</strong>。每个服务的配置独立保存。</p></div></div>
+      <div class="step"><div class="badge">1</div><div class="body"><h4>翻译服务选择</h4><p>下拉选你要配的服务。<strong>每选一个服务，下面的 Key/URL/Model 字段会切换</strong>，配置独立保存。</p></div></div>
       <div class="step"><div class="badge">2</div><div class="body"><h4>API Key</h4><p>从服务商后台复制粘贴。本地存储为 base64 + 文件权限 600，不上传任何服务器。<strong>失焦自动保存</strong>（点别处或按回车）。</p></div></div>
-      <div class="step"><div class="badge">3</div><div class="body"><h4>模型</h4><p>下拉选具体模型。DeepSeek 推荐 <code>deepseek-v4-flash</code>（便宜快，默认已选）；<b>别选 <code>deepseek-reasoner</code></b>——纯推理模型逐段翻译又慢又贵、还可能漏译。OpenAI 用 <code>gpt-4o-mini</code>。<b>自定义 / 硅基流动</b>选指令遵循强的<b>非推理</b>模型（如 <code>Qwen/Qwen2.5-72B-Instruct</code>、<code>deepseek-ai/DeepSeek-V3</code>），别用 <code>DeepSeek-R1</code> 这类——译文易混进「（注：…）」解释。（v2.3.9 起会自动清掉多余的译者注）</p></div></div>
+      <div class="step"><div class="badge">3</div><div class="body"><h4>模型</h4><p>下拉选具体模型。DeepSeek 推荐 <code>deepseek-chat</code>（便宜快）；<b>别选 <code>deepseek-reasoner</code></b> —— 纯推理模型逐段翻译又慢又贵、还可能漏译。OpenAI 用 <code>gpt-4o-mini</code>。<b>自定义 / 硅基流动</b>选指令遵循强的<b>非推理</b>模型（如 <code>Qwen/Qwen2.5-72B-Instruct</code>、<code>deepseek-ai/DeepSeek-V3</code>），别用 <code>DeepSeek-R1</code> 这类 —— 译文易混进「（注：…）」解释。内置的兜底清洗会自动清掉多余的译者注。</p></div></div>
       <div class="step"><div class="badge">4</div><div class="body"><h4>Base URL</h4><p>API 端点。一般保持默认，除非你用三方代理（Cloudflare AI Gateway / OpenRouter / 自建中转）。</p></div></div>
       <div class="step"><div class="badge">5</div><div class="body"><h4>测试连接</h4><p>点一下让程序发一个最小翻译请求验证 Key 有效。失败时会弹错误信息（额度不足 / Key 无效 / 网络超时）。</p></div></div>
-      <div class="step"><div class="badge">6</div><div class="body"><h4>AI 助手（独立配置）</h4><p>阅读页右侧的「AI 问答」用的服务。可以和翻译服务<strong>用同一家</strong>（默认勾上「使用独立配置」就关闭，沿用翻译服务）。也可以让翻译用便宜的，AI 助手用更聪明的。</p></div></div>
-      <div class="step"><div class="badge">7</div><div class="body"><h4>翻译设置</h4><p>四个开关：<strong>深色模式</strong>（界面跟随）/ <strong>翻译缓存</strong>（建议开 · 同一段重复翻只调一次 API）/ <strong>AI 布局检测</strong>（实验性，开了会更准但更慢）/ <strong>字体子集化</strong>（开了输出 PDF 更小）。</p></div></div>
-      <div class="step"><div class="badge">8</div><div class="body"><h4>翻译提示词</h4><p>给 AI 的指令模板。默认「直译」，你可以改成「学术」「口语」「保留专业术语」等风格，<strong>支持多套预设</strong>，点「保存 / 新建 / 导入 / 导出」管理。改完点「保存」生效。</p></div></div>
-      <div class="step"><div class="badge">9</div><div class="body"><h4>术语表</h4><p>固定专业名词的翻法。比如 <code>Transformer → Transformer（不译）</code>、<code>token → 词元</code>。<strong>每个学科一份术语表</strong>，翻译前选对的一份。</p></div></div>
-      <div class="step"><div class="badge">10</div><div class="body"><h4>Zotero 联动（Zotero 7/8/9 通用 · v2.3.0 新增右键翻译）</h4><p>把翻译好的 PDF <b>作为原文献的子附件自动加入 Zotero</b>。点「一键安装」装 Zotero 插件（当前 <code>v1.0.19</code>（PaperFlow Connector for Zotero，跟原版 pdf2zh 区分），兼容 Zotero 7/8/9 整个系列）。<br><b>🚀 v2.3.0 新增</b>：在 Zotero 里对 PDF <b>右键 → 「📖 用 PaperFlow 翻译」</b> 一键翻译，还能选单文件输出（并排/双语/纯中文，<b>v2.3.4 起格式选择严格生效</b>），不用打开 paperflow。<br><b>🆕 v2.3.4 新增</b>：右键菜单可勾选 <b>「后台静默翻译」</b>，翻译时不弹窗、不抢占前台，最小化后台完成翻译并回写 Zotero，全部成功后自动关窗。<br><b>翻译前会自动检查</b>插件是否响应，翻译完状态栏显示同步结果。<a href="#faq">→ 同步没成功？看 FAQ</a></p></div></div>
-      <div class="step"><div class="badge">11</div><div class="body"><h4>打开数据目录</h4><p>跳转到 <code>~/.config/pdf2zh/</code>。出问题时把 <code>config.json</code> 和 <code>history.json</code> 截图发给我们排查。<strong>不要手动改</strong>这两个文件，App 会覆盖。</p></div></div>
+      <div class="step"><div class="badge">6</div><div class="body"><h4>AI 助手（独立配置）</h4><p>阅读页右侧「AI 问答」用的服务。可以和翻译服务<strong>用同一家</strong>，也可以让翻译用便宜的、AI 助手用更聪明的。</p></div></div>
+      <div class="step"><div class="badge">7</div><div class="body"><h4>翻译设置</h4><p>四个开关：<strong>深色模式</strong>（界面跟随）/ <strong>翻译缓存</strong>（建议开 · 同一段重复翻只调一次 API）/ <strong>AI 布局检测</strong>（开了更准但更慢）/ <strong>字体子集化</strong>（开了输出 PDF 更小）。</p></div></div>
+      <div class="step"><div class="badge">8</div><div class="body"><h4>翻译提示词</h4><p>给 AI 的指令模板。默认「直译」，可以改成「学术」「口语」「保留专业术语」等风格，<strong>支持多套预设</strong>，点「保存 / 新建 / 导入 / 导出」管理。</p></div></div>
+      <div class="step"><div class="badge">9</div><div class="body"><h4>术语表</h4><p>固定专业名词的翻法。比如 <code>Transformer → Transformer（不译）</code>、<code>token → 词元</code>。<strong>每个学科一份术语表</strong>，翻译前选对的那份。</p></div></div>
+      <div class="step"><div class="badge">10</div><div class="body"><h4>Zotero 联动（Zotero 7 / 8 / 9 通用）</h4><p>把翻译好的 PDF <b>作为原文献的子附件自动加回 Zotero 条目</b>。点「一键安装」装 Zotero 插件（当前 <code>paperflow-connector-v1.0.0.xpi</code>，即 <b>PaperFlow Connector for Zotero</b>）。<br>在 Zotero 里对 PDF <b>右键 → 「📖 用 PaperFlow 翻译」</b> 即可一键翻译，还能选单文件输出格式（并排 / 双语 / 纯中文），<b>不用打开 PaperFlow</b>。<br>右键菜单可勾选 <b>「后台静默翻译」</b>：不弹窗、不抢前台，后台完成翻译并回写 Zotero，成功后自动关窗。<br>翻译前会检查插件是否响应，翻译完状态栏显示同步结果。<a href="#faq">→ 同步没成功？看 FAQ</a></p></div></div>
+      <div class="step"><div class="badge">11</div><div class="body"><h4>打开数据目录</h4><p>跳转到配置目录。出问题时把 <code>config.json</code> 和 <code>history.json</code> 截图发过来排查。<strong>不要手动改</strong>这两个文件，App 会覆盖。</p></div></div>
     </div>
 
     <div class="notice info">
@@ -297,17 +315,17 @@
     </div>
 
     <div class="steps">
-      <div class="step"><div class="badge">1</div><div class="body"><h4>翻译历史 + 缩略图 + 清空</h4><p>左栏顶部。点「缩略图」切换列表/缩略图视图，点「清空」删除全部历史（不可逆，会问确认）。下方「全部 / 自建标签」按学科/项目分类。</p></div></div>
-      <div class="step"><div class="badge">2</div><div class="body"><h4>历史记录列表</h4><p>每翻译一份 PDF 自动添加一条。点击一条 = 直接打开该译文的 Side by Side 视图。<strong>右键</strong>可重命名、删除、移到分组。</p></div></div>
-      <div class="step"><div class="badge">3</div><div class="body"><h4>Dual</h4><p>双语对照模式：先一页原文，再一页译文，交替展示。适合精读 / 反复对照术语。</p></div></div>
+      <div class="step"><div class="badge">1</div><div class="body"><h4>翻译历史 + 缩略图 + 清空</h4><p>左栏顶部。点「缩略图」切换列表/缩略图视图，点「清空」删除全部历史（不可逆，会问确认）。</p></div></div>
+      <div class="step"><div class="badge">2</div><div class="body"><h4>历史记录列表</h4><p>每翻译一份 PDF 自动添加一条。点击一条 = 直接打开该译文的 Side by Side 视图。<strong>右键</strong>可重命名、删除、移动分组。</p></div></div>
+      <div class="step"><div class="badge">3</div><div class="body"><h4>Dual</h4><p>双语对照模式：先一页原文，再一页译文，交替展示。适合精读 / 反复核对术语。</p></div></div>
       <div class="step"><div class="badge">4</div><div class="body"><h4>Mono</h4><p>仅译文模式：只显示中文版。适合快速浏览全文掌握大意。</p></div></div>
       <div class="step"><div class="badge">5</div><div class="body"><h4>Side by Side</h4><p>左右并排（默认）：左原文右译文，<strong>滚动同步</strong>。最常用，推荐。</p></div></div>
-      <div class="step"><div class="badge">6</div><div class="body"><h4>连续 / 单页</h4><p>滚动行为切换。「连续」=网页式无限滚动，「单页」=一次显示一页（按 → 翻页）。</p></div></div>
-      <div class="step"><div class="badge">7</div><div class="body"><h4>打开 + 翻页器</h4><p>「打开」按钮：手动选别的 PDF。右边的 <code>« &lt; 1/N &gt; »</code> 是首页/上页/页码/下页/末页。</p></div></div>
-      <div class="step"><div class="badge">8</div><div class="body"><h4>缩放滑块 + 150%</h4><p>拖滑块调缩放比例（25%-300%），右边显示当前百分比。Cmd+滚轮也能缩放。</p></div></div>
-      <div class="step"><div class="badge">9</div><div class="body"><h4>适宽 / 适页</h4><p>「适宽」让 PDF 宽度撑满，竖向滚动；「适页」整页显示，左右居中。看公式多的论文用「适宽」。</p></div></div>
+      <div class="step"><div class="badge">6</div><div class="body"><h4>连续 / 单页</h4><p>滚动行为切换。「连续」= 网页式无限滚动，「单页」= 一次显示一页（按 → 翻页）。</p></div></div>
+      <div class="step"><div class="badge">7</div><div class="body"><h4>打开 + 翻页器</h4><p>「打开」按钮：手动选别的 PDF。右边的 <code>« &lt; 1/N &gt; »</code> 是首页 / 上页 / 页码 / 下页 / 末页。</p></div></div>
+      <div class="step"><div class="badge">8</div><div class="body"><h4>缩放滑块 + 150%</h4><p>拖滑块调缩放比例（25%–300%），右边显示当前百分比。Ctrl/Cmd + 滚轮也能缩放。</p></div></div>
+      <div class="step"><div class="badge">9</div><div class="body"><h4>适宽 / 适页</h4><p>「适宽」让 PDF 宽度撑满，竖向滚动；「适页」整页显示，左右居中。公式多的论文用「适宽」。</p></div></div>
       <div class="step"><div class="badge">10</div><div class="body"><h4>AI 问答 / 高亮 / 全屏</h4><p><strong>AI 问答</strong>：右侧抽屉，划词问 AI 解释。<strong>高亮</strong>：选中文字加荧光笔，跨语言同步（高亮原文，译文版同位置自动高亮）。<strong>全屏</strong>：F 键切换沉浸阅读。</p></div></div>
-      <div class="step"><div class="badge">11</div><div class="body"><h4>选择记录查看详情</h4><p>预览区空时的提示。点左侧任一历史记录或翻译完成后自动加载，这块就会变成 PDF 预览。</p></div></div>
+      <div class="step"><div class="badge">11</div><div class="body"><h4>选择记录查看详情</h4><p>预览区空时的提示。点左侧任一历史记录，或翻译完成后自动加载，这块就会变成 PDF 预览。</p></div></div>
     </div>
 
     <div class="notice tip">
@@ -334,11 +352,11 @@
     </div>
 
     <div class="steps">
-      <div class="step"><div class="badge">1</div><div class="body"><h4>版本与简介</h4><p>左上角是当前版本号（v2.3.9）。下面是简短描述：「开箱即用的学术 PDF 翻译工具」。</p></div></div>
-      <div class="step"><div class="badge">2</div><div class="body"><h4>macOS 版特性</h4><p>列出本版本的核心能力：原生设计、深色模式、Dual/Mono/Side by Side、历史管理、智能分块、触摸板手势、术语表、AI 问答、Zotero 联动等。</p></div></div>
-      <div class="step"><div class="badge">3</div><div class="body"><h4>联系作者</h4><p>作者 QQ：<b>2994574297@qq.com</b>。使用问题、功能建议、合作交流都可以直接联系。</p></div></div>
-      <div class="step"><div class="badge">4</div><div class="body"><h4>GitHub ↗</h4><p>跳转到 <a href="https://github.com/AaronGIG/pdf2zh-desktop">仓库主页</a>。看 Release 页下载新版、看 Issue 报 bug、看 Star 涨了多少。</p></div></div>
-      <div class="step"><div class="badge">5</div><div class="body"><h4>Star 与反馈</h4><p>感谢所有 Star / 反馈 bug 的朋友。每个支持都是继续迭代的动力。</p></div></div>
+      <div class="step"><div class="badge">1</div><div class="body"><h4>版本与简介</h4><p>左上角是当前版本号（<code>v1.0.0</code>）。下面是简短描述：「开箱即用的学术 PDF 翻译工具」。</p></div></div>
+      <div class="step"><div class="badge">2</div><div class="body"><h4>特性列表</h4><p>列出本版本的核心能力：无边框 macOS 风界面、深色模式、Dual / Mono / Side by Side、历史管理、分块翻译、术语表、AI 问答、Zotero 联动等。</p></div></div>
+      <div class="step"><div class="badge">3</div><div class="body"><h4>检查更新</h4><p>启动时会后台静默检测新版本，只提示不自动替换文件。有更新时这里会给出 Release 入口。</p></div></div>
+      <div class="step"><div class="badge">4</div><div class="body"><h4>GitHub ↗</h4><p>跳转到 <a href="https://github.com/GW19ddd/PaperFlow">仓库主页</a>。看 Release 页下载新版、看 Issue 报 bug、顺手点个 Star。</p></div></div>
+      <div class="step"><div class="badge">5</div><div class="body"><h4>反馈与致谢</h4><p>核心翻译引擎基于 <a href="https://github.com/Byaidu/PDFMathTranslate">PDFMathTranslate</a>（EMNLP 2025）。感谢所有 Star 与反馈的朋友，每个支持都是继续迭代的动力。</p></div></div>
       <div class="step"><div class="badge">6</div><div class="body"><h4>联系作者</h4><p>有问题欢迎发邮件到 <b>2994574297@qq.com</b> — 翻译异常、API 问题、功能建议都可以直接联系。</p></div></div>
     </div>
   </section>
@@ -348,7 +366,7 @@
       <span class="num">SERVICE</span>
       <h2>买 API · 服务推荐</h2>
     </div>
-    <p class="lead">翻译需要调外部 AI 服务。每家服务都要去对应官网注册账号 → 充值 → 创建 API Key → 粘贴到设置页。下面按「场景」推荐，照着选不会错。</p>
+    <p class="lead">翻译需要调外部 AI 服务。每家服务都要去官网注册账号 → 充值 → 创建 API Key → 粘贴到设置页。下面按「场景」推荐，照着选不会错。</p>
 
     <div class="decision">
       <h4>我该选哪家？</h4>
@@ -358,11 +376,15 @@
       </div>
       <div class="dec-row">
         <div class="q">完全免费</div>
-        <div class="a"><strong>Google 翻译</strong> · 不要 Key · 但要稳定翻墙，且大文件容易被限流；适合临时小文件</div>
+        <div class="a"><strong>Google / Bing 翻译</strong> · 不要 Key · Google 需稳定网络环境，且大文件容易被限流；适合临时小文件</div>
       </div>
       <div class="dec-row">
-        <div class="q">国内不翻墙</div>
-        <div class="a"><strong>通义千问 / 智谱 / DeepSeek</strong> · 国内服务商直连，速度最快，无需代理</div>
+        <div class="q">国内不折腾网络</div>
+        <div class="a"><strong>DeepSeek / 通义千问 / 智谱 / 阿里 qwen-mt</strong> · 国内服务商直连，速度最快</div>
+      </div>
+      <div class="dec-row">
+        <div class="q">专业术语最准</div>
+        <div class="a"><strong>阿里 qwen-mt</strong> · 通义千问的专用翻译模型，内置专业词库，适合专利 / 医学 / 法律场景</div>
       </div>
       <div class="dec-row">
         <div class="q">质量最高</div>
@@ -371,6 +393,13 @@
       <div class="dec-row">
         <div class="q">学校或公司有内网模型</div>
         <div class="a"><strong>OpenAI 兼容 / Ollama 本地</strong> · 自定义 Base URL，连任何 OpenAI-API 兼容服务（vLLM / Xinference / Ollama）</div>
+      </div>
+    </div>
+
+    <div class="notice warn" style="margin-top:24px">
+      <span class="ico">⚠</span>
+      <div>
+        <strong>遇到 429 限流怎么办：</strong>按分钟计的 RPM/QPS 超额时会报 <code>RateLimitError</code>。PaperFlow 内置指数退避重试（约 2/4/8/16/32/60 秒）会自动消化大部分限流；如果仍频繁触发，把界面「线程数」降到 <strong>2–4</strong> 再试。失败不必重头再来 —— 已翻好的段落有缓存，重跑会接着翻。
       </div>
     </div>
 
@@ -383,7 +412,7 @@
           <h5>DeepSeek</h5>
           <span class="tag rec">最推荐</span>
         </div>
-        <p class="desc">国产大模型 · 学术翻译质量第一档 · 千 token ¥0.001（输入），¥0.002（输出） · 注册送 ¥10 额度可翻 200 篇论文 · 模型选 <code>deepseek-chat</code>。</p>
+        <p class="desc">国产大模型 · 学术翻译质量第一档 · 千 token ¥0.001（输入）· 注册送额度，可翻大量论文 · 模型选 <code>deepseek-chat</code>。</p>
         <div class="links">
           <a href="https://platform.deepseek.com/" target="_blank">注册 / 充值</a>
           <a href="https://platform.deepseek.com/api_keys" target="_blank">创建 Key</a>
@@ -396,7 +425,7 @@
           <h5>通义千问 (DashScope)</h5>
           <span class="tag rec">国内优选</span>
         </div>
-        <p class="desc">阿里云出品 · 稳定速度快 · 千 token ¥0.0008-0.012（按模型档位）· 注册送大量免费额度 · 推荐模型 <code>qwen-plus</code> / <code>qwen-max</code>。</p>
+        <p class="desc">阿里云出品 · 稳定速度快 · 推荐模型 <code>qwen-plus</code> / <code>qwen-max</code>；需要术语强约束时用专用翻译模型 <code>qwen-mt</code>。</p>
         <div class="links">
           <a href="https://bailian.console.aliyun.com/" target="_blank">百炼平台</a>
           <a href="https://help.aliyun.com/zh/dashscope/" target="_blank">文档</a>
@@ -408,7 +437,7 @@
           <div class="icon" style="background:#5b6cff">Z</div>
           <h5>智谱 ChatGLM</h5>
         </div>
-        <p class="desc">清华系 · GLM-4 系列 · 千 token ¥0.001（GLM-4-Flash 免费档）· 注册送资源包 · 适合预算敏感大量翻译。</p>
+        <p class="desc">清华系 · GLM-4 系列 · GLM-4-Flash 有免费档 · 注册送资源包 · 适合预算敏感、量大频繁翻译。</p>
         <div class="links">
           <a href="https://open.bigmodel.cn/" target="_blank">开放平台</a>
           <a href="https://open.bigmodel.cn/usercenter/apikeys" target="_blank">创建 Key</a>
@@ -420,7 +449,7 @@
           <div class="icon" style="background:#10a37f">O</div>
           <h5>OpenAI</h5>
         </div>
-        <p class="desc">质量天花板 · GPT-4o-mini 性价比可以 · 千 token $0.00015（输入）· 但需<strong>海外信用卡</strong>充值，国内信用卡多被风控。</p>
+        <p class="desc">质量天花板 · GPT-4o-mini 性价比可以 · 但需<strong>海外信用卡</strong>充值，国内信用卡多被风控。</p>
         <div class="links">
           <a href="https://platform.openai.com/api-keys" target="_blank">API Keys</a>
           <a href="https://openai.com/pricing" target="_blank">价格</a>
@@ -432,7 +461,7 @@
           <div class="icon" style="background:#7c3aed">G</div>
           <h5>Google Gemini</h5>
         </div>
-        <p class="desc">Gemini 1.5 Flash 免费档每分钟 15 请求 · 长文本能力强（2M token 窗口）· 国内需翻墙 · 用 Google 账号即可申请 Key。</p>
+        <p class="desc">Gemini Flash 有免费额度 · 长文本能力强 · 用 Google 账号即可申请 Key · 国内访问需自行处理网络。</p>
         <div class="links">
           <a href="https://aistudio.google.com/app/apikey" target="_blank">AI Studio</a>
         </div>
@@ -443,7 +472,7 @@
           <div class="icon" style="background:#00a1d6">S</div>
           <h5>SiliconFlow 硅基流动</h5>
         </div>
-        <p class="desc">国内 LLM 聚合中转 · 一个 Key 调 20+ 模型（DeepSeek/Qwen/Yi/Llama）· 价格对齐源厂 · 注册送 ¥14 体验金。</p>
+        <p class="desc">国内 LLM 聚合中转 · 一个 Key 调 20+ 模型（DeepSeek / Qwen / Yi / Llama）· 价格对齐源厂 · 注册送体验金。</p>
         <div class="links">
           <a href="https://cloud.siliconflow.cn/" target="_blank">注册</a>
           <a href="https://cloud.siliconflow.cn/account/ak" target="_blank">API Key</a>
@@ -455,7 +484,7 @@
           <div class="icon" style="background:#0077c8">D</div>
           <h5>DeepL</h5>
         </div>
-        <p class="desc">欧系翻译质量第一 · 但学术领域不如 LLM · 月 50万字符免费 · 注册需海外手机号或信用卡 · 不支持公式术语保留。</p>
+        <p class="desc">欧系翻译质量第一 · 但学术领域不如 LLM · 每月有免费字符额度 · 注册需海外手机号或信用卡 · 不支持公式术语保留。</p>
         <div class="links">
           <a href="https://www.deepl.com/pro-api" target="_blank">DeepL Pro API</a>
         </div>
@@ -464,10 +493,10 @@
       <div class="card">
         <div class="top">
           <div class="icon" style="background:#34c759">F</div>
-          <h5>Google 翻译</h5>
+          <h5>Google / Bing 翻译</h5>
           <span class="tag free">免费</span>
         </div>
-        <p class="desc">不需要 Key，但需要稳定翻墙环境。质量一般，大文件容易被限流。<strong>仅用于第一次试用流程</strong>，正式用强烈建议切到 LLM 服务。</p>
+        <p class="desc">不需要 Key，质量一般。<strong>仅用于第一次跑通流程</strong>，正式使用强烈建议切到 LLM 服务。</p>
         <div class="links">
           <a href="#sec-translate">→ 翻译页直接选</a>
         </div>
@@ -478,7 +507,7 @@
           <div class="icon" style="background:#666">∞</div>
           <h5>OpenAI 兼容 / 自建</h5>
         </div>
-        <p class="desc">设置页选「OpenAI-liked」，Base URL 填你自己的 vLLM/Xinference/Ollama 地址（如 <code>http://localhost:11434/v1</code>）。完全本地，零成本，质量看你跑的模型。</p>
+        <p class="desc">设置页选「OpenAI 兼容格式」，Base URL 填你自己的 vLLM / Xinference / Ollama 地址（如 <code>http://localhost:11434/v1</code>）。完全本地，零成本，质量看你跑的模型。</p>
         <div class="links">
           <a href="https://ollama.com/" target="_blank">Ollama</a>
           <a href="https://github.com/vllm-project/vllm" target="_blank">vLLM</a>
@@ -489,7 +518,7 @@
     <div class="notice warn" style="margin-top:28px">
       <span class="ico">⚠</span>
       <div>
-        <strong>第一次充值前先小额试用：</strong>每家都先充 ¥10 / $5，跑两篇论文确认翻译质量、速度、计费方式都符合预期，再决定是不是大额充值。<strong>API Key 永远只放本地</strong>，不要发到群里、邮件里、GitHub 仓库里。
+        <strong>第一次充值前先小额试用：</strong>每家都先充 ¥10 / $5，跑两篇论文确认翻译质量、速度、计费方式都符合预期，再决定是否大额充值。<strong>API Key 永远只放本地</strong>，不要发到群里、邮件里、GitHub 仓库里。
       </div>
     </div>
   </section>
@@ -499,7 +528,7 @@
       <span class="num">OCR</span>
       <h2>扫描版 PDF · 文字层补全方案</h2>
     </div>
-    <p class="lead">如果你的 PDF 是扫描件（图片型，选不了文字、复制不出来），翻译页的「OCR 识别」勾选框只能做<strong>非常基础的文字识别</strong>，对复杂版面、公式、表格、多栏论文识别率低。<strong>强烈建议先用专业 OCR 软件</strong>给 PDF 加一层文字层，再回到 paperflow 翻译，效果天差地别。</p>
+    <p class="lead">如果你的 PDF 是扫描件（图片型，选不了文字、复制不出来），翻译页的「OCR 识别」只能做<strong>基础的文字识别</strong>，对复杂版面、公式、表格、多栏论文识别率有限。<strong>强烈建议先用专业 OCR 软件</strong>给 PDF 加一层文字层，再回到 PaperFlow 翻译，效果天差地别。</p>
 
     <div class="grid">
       <div class="card">
@@ -508,7 +537,7 @@
           <h5>ABBYY FineReader</h5>
           <span class="tag rec">最准</span>
         </div>
-        <p class="desc">业界标杆 · 中英日多语种 · 公式识别可用 · 表格保留结构 · macOS 版 ¥1300/年 · 大量论文 OCR 必备。</p>
+        <p class="desc">业界标杆 · 中英日多语种 · 公式识别可用 · 表格保留结构 · 大量论文 OCR 必备。</p>
         <div class="links">
           <a href="https://pdf.abbyy.com/" target="_blank">官网</a>
         </div>
@@ -519,7 +548,7 @@
           <div class="icon" style="background:#ee2f24">A</div>
           <h5>Adobe Acrobat Pro</h5>
         </div>
-        <p class="desc">Acrobat Pro DC 自带 OCR · 「工具 → 增强扫描」一键加文字层 · ¥130/月订阅 · 已有 Adobe 全家桶的人首选。</p>
+        <p class="desc">Acrobat Pro 自带 OCR · 「工具 → 增强扫描」一键加文字层 · 已有 Adobe 全家桶的人首选。</p>
         <div class="links">
           <a href="https://www.adobe.com/cn/acrobat.html" target="_blank">Acrobat</a>
         </div>
@@ -528,10 +557,10 @@
       <div class="card">
         <div class="top">
           <div class="icon" style="background:#f5b400">B</div>
-          <h5>白描 / Text Scanner (Mac)</h5>
+          <h5>白描 / Text Scanner</h5>
           <span class="tag rec">便宜好用</span>
         </div>
-        <p class="desc">App Store 搜「白描」· ¥38 买断 · 中文 OCR 准 · 拖入 PDF 一键识别导出可搜索 PDF · 小批量论文足够。</p>
+        <p class="desc">Mac App Store / Windows 商店搜「白描」· 买断制 · 中文 OCR 准 · 拖入 PDF 一键识别导出可搜索 PDF · 小批量论文足够。</p>
         <div class="links">
           <a href="https://baimiao.uzero.cn/" target="_blank">官网</a>
         </div>
@@ -555,7 +584,7 @@
           <h5>PDFgear / PDF24</h5>
           <span class="tag free">免费</span>
         </div>
-        <p class="desc">免费 PDF 工具箱内置 OCR · 中等准度 · 适合一两个文件临时用 · 都有 macOS 版。</p>
+        <p class="desc">免费 PDF 工具箱内置 OCR · 中等准度 · 适合一两个文件临时用 · Windows / macOS 都有。</p>
         <div class="links">
           <a href="https://www.pdfgear.com/" target="_blank">PDFgear</a>
           <a href="https://tools.pdf24.org/" target="_blank">PDF24</a>
@@ -567,7 +596,7 @@
           <div class="icon" style="background:#0086cc">B</div>
           <h5>百度 / 腾讯 OCR API</h5>
         </div>
-        <p class="desc">通用文字识别 + 公式识别 API · 千次 ¥0.5-2 · 需要自己写脚本调用 → 拼回 PDF · 适合开发者批量处理。</p>
+        <p class="desc">通用文字识别 + 公式识别 API · 千次几元量级 · 需要自己写脚本调用 → 拼回 PDF · 适合开发者批量处理。</p>
         <div class="links">
           <a href="https://cloud.baidu.com/product/ocr" target="_blank">百度 OCR</a>
           <a href="https://cloud.tencent.com/product/ocr" target="_blank">腾讯 OCR</a>
@@ -582,8 +611,8 @@
         <ol style="margin-top:8px;padding-left:20px;line-height:2">
           <li>扫描 PDF → 用 <strong>白描 / ABBYY / OCRmyPDF</strong> 加文字层 → 输出新 PDF</li>
           <li>用 Acrobat / Preview 打开新 PDF，确认能选中文字、能复制</li>
-          <li>把这个新 PDF 拖进 paperflow-desktop · <strong>不勾「扫描版 PDF」「OCR 识别」</strong></li>
-          <li>正常翻译 — 这时候得到的版式、公式、术语效果就跟原生 PDF 一样好</li>
+          <li>把这个新 PDF 拖进 PaperFlow · <strong>不勾「扫描版 PDF」「OCR 识别」</strong></li>
+          <li>正常翻译 — 这时得到的版式、公式、术语效果就跟原生 PDF 一样好</li>
         </ol>
       </div>
     </div>
@@ -594,7 +623,7 @@
       <span class="num">OPTIONS</span>
       <h2>⚙️ 勾选框速查 — 什么时候该勾，什么时候别勾</h2>
     </div>
-    <p class="lead">翻译页有 4 个勾选框、设置页有 4 个开关。每个选项<strong>都有明确的适用场景</strong>，误勾会拖慢速度或让译文效果反而变差。下面表格按「场景 → 是否勾」帮你速查（也可以在软件里把鼠标悬停在勾选框上 1-2 秒，会浮出简短提示）。</p>
+    <p class="lead">翻译页有 4 个勾选框、设置页有 4 个开关。每个选项<strong>都有明确的适用场景</strong>，误勾会拖慢速度或让译文效果反而变差。下面按「场景 → 是否勾」帮你速查（软件里把鼠标悬停在勾选框上 1-2 秒，也会浮出简短提示）。</p>
 
     <h3 style="font-size:20px;font-weight:700;margin:24px 0 12px">翻译页 · 4 个勾选框</h3>
     <div class="grid">
@@ -602,25 +631,26 @@
         <div class="top"><h5>📜 扫描版 PDF</h5></div>
         <p class="desc"><b>做什么：</b>在译文位置上盖一层白色矩形，把底层的原文遮住。<br>
         <b style="color:#1d6d3a">✅ 该勾：</b>扫描件（图书馆扫的旧书 / 有文字层但排版乱、译文和原文重叠）<br>
-        <b style="color:#a8261c">❌ 别勾：</b>普通数字 PDF（论文/技术文档）— 段落间隙会露出原文，观感更差</p>
+        <b style="color:#a8261c">❌ 别勾：</b>普通数字 PDF（论文 / 技术文档）— 段落间隙会露出原文，观感更差</p>
       </div>
       <div class="card">
         <div class="top"><h5>📊 翻译表格内容</h5></div>
         <p class="desc"><b>做什么：</b>启用<b>按单元格</b>翻译的独立管线，逐格调用 API。<br>
-        <b style="color:#1d6d3a">✅ 该勾：</b><b>专利文件 / 检测报告 / 财报 / 法规条例</b> 等表格密集型 PDF（全文都是表格）<br>
-        <b style="color:#a8261c">❌ 别勾：</b>只有零星几个表格的普通 PDF — 会让整个翻译时间 ×3，得不偿失</p>
+        <b style="color:#1d6d3a">✅ 该勾：</b><b>专利文件 / 检测报告 / 财报 / 法规条例</b> 等表格密集型 PDF<br>
+        <b style="color:#a8261c">❌ 别勾：</b>只有零星几个表格的普通 PDF — 会让整个翻译时间明显变长<br>
+        <b style="color:#666">ℹ️ 提示：</b>勾选后可单独指定表格翻译的页码范围，正文仍整篇翻译；翻译结果有异常时会弹窗说明原因</p>
       </div>
       <div class="card">
         <div class="top"><h5>🔍 OCR 识别</h5></div>
-        <p class="desc"><b>做什么：</b>翻译前先用 OCR（v2.2.6+ 内置 PaddleOCR）识别图片里的文字生成文字层。<br>
+        <p class="desc"><b>做什么：</b>翻译前先用内置 OCR 引擎（PaddleOCR）识别图片里的文字生成文字层。<br>
         <b style="color:#1d6d3a">✅ 该勾：</b>纯图片扫描件（在预览里<b>拖选不中任何文字</b>）<br>
-        <b style="color:#a8261c">❌ 别勾：</b>有文字层的 PDF（拖选能选中）— 浪费几分钟到十几分钟做无用 OCR</p>
+        <b style="color:#a8261c">❌ 别勾：</b>有文字层的 PDF — 浪费几分钟到十几分钟做无用 OCR</p>
       </div>
       <div class="card">
         <div class="top"><h5>📦 分块翻译（大文件推荐）</h5></div>
-        <p class="desc"><b>做什么：</b>按每 50 页一块提交翻译，块间隔 10 秒，避免触发 API 频率限制。<br>
-        <b style="color:#1d6d3a">✅ 该勾：</b>大文件（&gt; 50 页）+ 免费/限流服务（Google / 免费额度 DeepSeek）<br>
-        <b style="color:#a8261c">❌ 别勾：</b>小文件（&lt; 20 页）或已充值大额度的付费服务 — 白白等 10 秒 × N 次</p>
+        <p class="desc"><b>做什么：</b>把长文档切成若干块提交翻译，块之间留出间隔，避免触发 API 频率限制。<br>
+        <b style="color:#1d6d3a">✅ 该勾：</b>大文件（&gt; 50 页）+ 免费 / 限流服务<br>
+        <b style="color:#a8261c">❌ 别勾：</b>小文件或已充值大额度的付费服务 — 白等间隔时间</p>
       </div>
     </div>
 
@@ -628,27 +658,27 @@
     <div class="grid">
       <div class="card">
         <div class="top"><h5>🎨 深色模式</h5></div>
-        <p class="desc"><b>做什么：</b>整个 app 换深色主题。<br>
+        <p class="desc"><b>做什么：</b>整个应用换深色主题。<br>
         <b style="color:#1d6d3a">✅ 该开：</b>夜间使用 / 眼睛怕光<br>
         <b style="color:#666">⚪ 无所谓：</b>纯偏好，不影响翻译效果</p>
       </div>
       <div class="card">
         <div class="top"><h5>💾 翻译缓存</h5></div>
         <p class="desc"><b>做什么：</b>把「原文段落 → 译文」存到本地 SQLite，同段落只调一次 API。<br>
-        <b style="color:#1d6d3a">✅ 该开（默认）：</b>永远开着 — 重翻同文件不烧钱，多次调整参数省时间<br>
-        <b style="color:#a8261c">❌ 临时关：</b>换了模型/prompt/术语表想强制重翻时</p>
+        <b style="color:#1d6d3a">✅ 该开（默认）：</b>永远开着 — 重翻同文件不烧钱，断点重来也快<br>
+        <b style="color:#a8261c">❌ 临时关：</b>换了模型 / 提示词 / 术语表想强制重翻时</p>
       </div>
       <div class="card">
         <div class="top"><h5>🧠 AI 布局检测</h5></div>
-        <p class="desc"><b>做什么：</b>用 doclayout-yolo 视觉模型识别页面结构（正文 / 标题 / 公式 / 表格），只翻正文和标题。<br>
+        <p class="desc"><b>做什么：</b>用视觉模型识别页面结构（正文 / 标题 / 公式 / 表格），只翻正文和标题。<br>
         <b style="color:#1d6d3a">✅ 该开：</b>学术论文（有公式、多栏、复杂排版）<br>
-        <b style="color:#a8261c">❌ 关掉试试：</b>公式翻乱、正文和公式串在一起时；或纯文本无公式文档（关掉快 20%）</p>
+        <b style="color:#a8261c">❌ 关掉试试：</b>公式翻乱、正文和公式串在一起时；或纯文本无公式文档（关掉更快）</p>
       </div>
       <div class="card">
         <div class="top"><h5>🔤 字体子集化</h5></div>
-        <p class="desc"><b>做什么：</b>输出 PDF 只嵌入用到的中文字符（而不是整个 20MB 字体），减小文件体积。<br>
-        <b style="color:#1d6d3a">✅ 该开（默认）：</b>只需要在 Adobe / Preview / 微信 里阅读<br>
-        <b style="color:#a8261c">❌ 关掉：</b>输出 PDF 要拿给第三方 OCR、二次编辑、或对方阅读器不支持子集字体 — 关掉后复制粘贴才不会缺字</p>
+        <p class="desc"><b>做什么：</b>输出 PDF 只嵌入用到的中文字符（而不是整个字体），减小文件体积。<br>
+        <b style="color:#1d6d3a">✅ 该开（默认）：</b>只在阅读器里看<br>
+        <b style="color:#a8261c">❌ 关掉：</b>输出 PDF 要二次 OCR / 编辑、或对方阅读器不支持子集字体（勾错会导致复制粘贴缺字）</p>
       </div>
     </div>
 
@@ -658,7 +688,7 @@
         <strong>最容易误勾的 3 个：</strong>
         <ol style="margin:8px 0 0 22px;line-height:1.9">
           <li><b>「扫描版 PDF」</b>—— 数字 PDF 勾了会让段落间露原文，看着更乱</li>
-          <li><b>「翻译表格内容」</b>—— 只有一两个表格勾了会让整篇文档慢 3 倍</li>
+          <li><b>「翻译表格内容」</b>—— 只有一两个表格时勾了会让整篇明显变慢</li>
           <li><b>「OCR 识别」</b>—— 已有文字层勾了浪费大量时间没收益</li>
         </ol>
         <span style="display:block;margin-top:8px">这 3 个是<b>专门的场景开关</b>，<b>默认全不勾</b>就好，除非你确定当前 PDF 属于对应场景。</span>
@@ -674,108 +704,103 @@
     <div class="grid">
       <div class="card">
         <div class="top"><h5>翻译卡在 0% 不动？</h5></div>
-        <p class="desc">通常是 API Key 没配 / 配错。回设置页点「测试连接」验证。免费 Google 翻译需要稳定翻墙环境。</p>
+        <p class="desc">通常是 API Key 没配 / 配错。回设置页点「测试连接」验证。免费服务还需要稳定的网络环境。</p>
       </div>
       <div class="card">
-        <div class="top"><h5>大文件提示限流 / 失败？</h5></div>
-        <p class="desc">翻译页勾「分块翻译」，每块 50 页，间隔 10 秒。或线程数从 16 调到 4-8。免费服务尤其需要。</p>
+        <div class="top"><h5>提示 429 / RateLimitError？</h5></div>
+        <p class="desc">服务商按分钟限额，PaperFlow 会自动退避重试（最多约 3 分钟）。仍频繁触发就把线程数降到 2–4、或勾「分块翻译」。失败不用重头开始：已翻好的段落有缓存，重跑会接着翻。</p>
+      </div>
+      <div class="card">
+        <div class="top"><h5>大文件失败 / 翻到一半断？</h5></div>
+        <p class="desc">先检查磁盘空间；翻译是有缓存的，重跑会从未翻完的地方继续。勾「分块翻译」能明显降低失败率。</p>
+      </div>
+      <div class="card">
+        <div class="top"><h5>译文残缺 / 少了半段？</h5></div>
+        <p class="desc">免费网页服务（Google / Bing）对单次请求长度有硬限制。PaperFlow 已做分块处理；如仍有缺失，换 LLM 服务重翻即可。<strong>如果被壁厚/reserved 术语/公式占位符丢失</strong>，请把日志截图发过来。</p>
       </div>
       <div class="card">
         <div class="top"><h5>公式翻乱 / 字符错位？</h5></div>
-        <p class="desc">v2.2.5+ 已修复 MS-Mincho 误判 / DeepSeek 注释抑制。如果仍异常，关掉「AI 布局检测」试试。</p>
-      </div>
-      <div class="card">
-        <div class="top"><h5>App 打开闪退 / 崩溃？</h5></div>
-        <p class="desc">删掉 <code>~/.cache/babeldoc</code>，再重新打开（会重新下载字体）。还不行去 GitHub Issue 贴日志：<code>~/Library/Logs/paperflow-desktop/</code>。</p>
+        <p class="desc">先关掉「AI 布局检测」试试；仍异常通常是 PDF 字体编码不规范（见下面 WPS / 旧 Word 那条）。</p>
       </div>
       <div class="card">
         <div class="top"><h5>翻译质量不如预期？</h5></div>
-        <p class="desc">服务从 Google 切到 DeepSeek/通义千问，质量提升明显。设置页加术语表，固定专业名词译法。</p>
+        <p class="desc">服务从 Google / Bing 切到 DeepSeek / 通义千问，质量提升明显。设置页加术语表，固定专业名词译法。</p>
       </div>
       <div class="card">
         <div class="top"><h5>能翻日文 / 德文 / 俄文吗？</h5></div>
-        <p class="desc">能。翻译页改「源语言」为对应语种。模型默认都支持 50+ 语言互译。</p>
+        <p class="desc">能。翻译页改「源语言」为对应语种，模型默认支持数十种语言互译。</p>
       </div>
       <div class="card">
         <div class="top"><h5>能翻成英文 / 日文吗？</h5></div>
-        <p class="desc">能。翻译页改「目标语言」即可。中→英、英→日都很常见。</p>
+        <p class="desc">能。翻译页改「目标语言」即可，中→英、英→日都很常见。</p>
       </div>
       <div class="card">
         <div class="top"><h5>翻译历史在哪？怎么备份？</h5></div>
-        <p class="desc">阅读页左栏 = 历史。原始数据：<code>~/.config/pdf2zh/history.json</code>。备份这个文件即可。</p>
+        <p class="desc">阅读页左栏就是历史列表；原始数据存于本地数据目录的 <code>history.json</code>，备份这个文件即可。</p>
       </div>
       <div class="card">
         <div class="top"><h5>API Key 安全吗？</h5></div>
-        <p class="desc">本地存 base64 + 文件权限 600，不上传服务器。如果担心源码可在 GitHub 仓库审计 <code>config_manager.py</code>。</p>
+        <p class="desc">本地存储（混淆 + 文件权限限制），不上传服务器。源码在 GitHub 仓库可自行审计。</p>
       </div>
-
       <div class="card">
         <div class="top"><h5>翻译完跟原文一模一样，看不到中文？</h5></div>
-        <p class="desc"><b>多半是扫描件</b>。在原 PDF 里用鼠标拖选 — 选不中字、只拖出虚线框 = 没有文字层。先在 Acrobat / <code>ocrmypdf</code> 加文字层再翻：<code>brew install ocrmypdf && ocrmypdf in.pdf out.pdf -l eng</code>。</p>
+        <p class="desc"><b>多半是扫描件</b>。在原 PDF 里用鼠标拖选 —— 选不中字、只拖出虚线框 = 没有文字层。先加文字层再翻：<code>brew install ocrmypdf &amp;&amp; ocrmypdf in.pdf out.pdf -l eng</code>，或用 Acrobat 的 OCR。</p>
       </div>
-
       <div class="card">
         <div class="top"><h5>WPS / 旧 Word 导出的 PDF 翻不动？</h5></div>
-        <p class="desc">这类 PDF 字体编码不规范（字体名 Generic0/1 之类，<code>cid:</code> 解码失败），引擎会把整段误判成公式跳过。<b>解法</b>：用 Adobe Acrobat 打开 → 文件 → 另存为 PDF（会重嵌字体表）→ 再翻。或先转 Word 再用 Word 重导。</p>
+        <p class="desc">这类 PDF 字体编码不规范，引擎会把整段误判成公式跳过。<b>解法</b>：用 Adobe Acrobat 打开 → 另存为 PDF（会重嵌字体表）→ 再翻；或先转 Word 再重新导出。</p>
       </div>
-
-      <div class="card">
-        <div class="top"><h5>报错 <code>urlopen error [Errno 8]</code>？</h5></div>
-        <p class="desc">网络层 DNS 解析失败，跟 PDF 无关。检查 3 件事：① 设置里 base_url 是否完整（<code>https://...</code> 开头、不要多 <code>/v1</code>）；② 浏览器能否访问对应 API 域名；③ 关掉 VPN / 系统代理再试。校园网 / 公司网经常拦 LLM API。</p>
-      </div>
-
       <div class="card">
         <div class="top"><h5>报错 <code>KeyError: 'Length1'</code>？</h5></div>
-        <p class="desc">PDF 嵌入了不规范的 Type1 字体（少了 Length1 必填字段），常见于 WPS、旧 Office、某些在线 PDF 工具导出。<b>绕过</b>：Adobe Acrobat / Chrome「打印 → 另存为 PDF」重新导出一份，字体表会被补齐。</p>
+        <p class="desc">PDF 嵌入了不规范的 Type1 字体（少了 Length1 必填字段），常见于 WPS、旧 Office、某些在线 PDF 工具导出。用 Acrobat / Chrome「打印 → 另存为 PDF」重新导出一份即可。</p>
       </div>
-
+      <div class="card">
+        <div class="top"><h5>报错 <code>urlopen error [Errno 8]</code>？</h5></div>
+        <p class="desc">DNS 解析失败，跟 PDF 无关。检查 3 件事：① Base URL 是否完整（<code>https://...</code> 开头、不要多 <code>/v1</code>）；② 浏览器能否访问该 API 域名；③ 关掉 VPN / 系统代理再试。校园网 / 公司网经常拦 LLM API。</p>
+      </div>
       <div class="card">
         <div class="top"><h5>勾了「OCR 识别」还是没翻出来？</h5></div>
-        <p class="desc">v2.2.6 起已内置中英文 OCR 引擎（PaddleOCR v4 模型，约 15MB）。如仍无效：① OCR 会<b>全本扫描</b>，大文件需要几分钟到十几分钟，耐心等进度条；② 手写体 / 极小字号 / 模糊扫描页识别率有限，建议先用 Acrobat OCR 处理后再翻；③ 翻译只对你选定的页面范围生效，但 OCR 会扫整本，只想测首页就先用 PDF 工具拆出单页再丢进来。</p>
+        <p class="desc">已内置中英文 OCR 引擎。仍无效的话：① OCR 会<b>全本扫描</b>，大文件需要几分钟到十几分钟，耐心等进度条；② 手写体 / 极小字号 / 模糊页识别率有限；③ 只翻某几页时，建议先用 PDF 工具把这几页拆出来。</p>
       </div>
-
       <div class="card">
-        <div class="top"><h5>怎么先判断 PDF 是不是扫描件？</h5></div>
-        <p class="desc">最快办法：macOS 预览打开 PDF，用鼠标拖选文字。<b>能选中</b>（光标变 I 型、能复制）= 有文字层，直接翻；<b>选不中</b>（只能拉虚线框）= 扫描件，需要先 OCR。</p>
+        <div class="top"><h5>怎么判断 PDF 是不是扫描件？</h5></div>
+        <p class="desc">最快办法：用阅读器打开 PDF 拖选文字。<b>能选中</b>（光标变 I 型、能复制）= 有文字层，直接翻；<b>选不中</b>（只能拉虚线框）= 扫描件，需要先 OCR。</p>
       </div>
-
       <div class="card">
-        <div class="top"><h5>双击 App 提示「已损坏，无法打开」？</h5></div>
-        <p class="desc"><b>不是真的损坏</b>。macOS Gatekeeper 拦了未购买 Apple 开发者证书的 App。终端跑一行立刻解决：<br><code>xattr -cr /Applications/paperflow.app</code><br>或者 Finder 里<b>右键 → 打开</b>（不是双击），弹窗点「打开」即可，之后双击都正常。</p>
+        <div class="top"><h5>Windows 双击 <code>.vbs</code> 提示不兼容？</h5></div>
+        <p class="desc">Windows 11 24H2 已废弃 VBScript，改用 <code>paperflow.bat</code> 或 <code>paperflow.exe</code> 启动即可。</p>
       </div>
-
       <div class="card">
-        <div class="top"><h5>Zotero 联动 · 翻译完没同步 / 找不到译文？</h5></div>
+        <div class="top"><h5>macOS 提示「已损坏，无法打开」？</h5></div>
+        <p class="desc"><b>不是真的损坏</b>，是 Gatekeeper 拦了未签名的 App。终端跑一行解决：<br><code>xattr -cr /Applications/paperflow.app</code><br>或 Finder 里<b>右键 → 打开</b>，之后双击都正常。</p>
+      </div>
+      <div class="card">
+        <div class="top"><h5>App 打不开 / 闪退？</h5></div>
+        <p class="desc">删掉 <code>~/.cache/babeldoc</code> 后重开（会重新下载字体）。Windows 先跑一次 <code>install.bat</code> 补 VC++ 运行库；仍不行就到 GitHub Issues 贴 <code>logs/</code> 下的日志。</p>
+      </div>
+      <div class="card">
+        <div class="top"><h5>Zotero 联动 · 翻译完没同步？</h5></div>
         <p class="desc">
-        <b>关键：不要看物理磁盘路径</b>，看 Zotero 里那篇原论文 → <b>展开</b> → 有没有出现「<code>Translated PDF - xxx</code>」子附件。<br>
-        <b>没有子附件 = 联动失败</b>，v2.2.5+ / v2.2.6+ 会在状态栏给出明确原因：<br>
-        - ❌ <b>Zotero 未打开</b> → 请打开 Zotero 后重新翻译<br>
-        - ❌ <b>插件未装/未启用</b> → 下载最新 <a href="https://github.com/AaronGIG/pdf2zh-desktop/releases/download/v2.3.9/paperflow-connector-v1.0.19.xpi"><code>paperflow-connector-v1.0.19.xpi</code></a>，Zotero 里「工具 → 附加组件 → ⚙ → Install Add-on From File」装上后重启 Zotero<br>
-        - ❌ <b>PDF 不在 Zotero storage 里</b> → 必须从 Zotero「右键 PDF → 显示文件」拖入 paperflow，从 Downloads/桌面拖不会触发同步<br>
-        <br>翻译输出的 PDF 存在 <code>~/Documents/paperflow_files/</code> 是<b>默认行为</b>，正确联动时 Zotero 会自己把它拷进 storage 新目录 —— 不需要你手动调路径。</p>
+        <b>关键：不要看磁盘路径</b>，看 Zotero 里那篇原论文 → <b>展开</b> → 有没有出现译文子附件。<br>
+        <b>没有子附件 = 联动失败</b>，状态栏会给出原因：<br>
+        - ❌ <b>Zotero 未打开</b> → 打开 Zotero 后重新翻译<br>
+        - ❌ <b>插件未装 / 未启用</b> → 设置页点「一键安装插件」，或下载 <a href="https://github.com/GW19ddd/PaperFlow/releases/download/v1.0.0/paperflow-connector-v1.0.0.xpi"><code>paperflow-connector-v1.0.0.xpi</code></a>，Zotero 里「工具 → 附加组件 → ⚙ → Install Add-on From File」装上后重启<br>
+        - ❌ <b>PDF 不在 Zotero storage 里</b> → 必须从 Zotero 里「右键 PDF → 显示文件」拖入 PaperFlow；链接型附件（zotmoov 等）译文会放回原目录并关联回条目<br>
+        <br>翻译输出目录是<b>默认行为</b>，正确联动时会自动关联回条目 —— 不需要你手动调路径。</p>
       </div>
-
-      <div class="card">
-        <div class="top"><h5>Zotero 9.0.4+ 提示插件不兼容？</h5></div>
-        <p class="desc">这是旧 v1.0.5 插件的通配符 bug。下载最新 <a href="https://github.com/AaronGIG/pdf2zh-desktop/releases/download/v2.3.9/paperflow-connector-v1.0.19.xpi"><code>paperflow-connector-v1.0.19.xpi</code></a>（1.6 KB）拖进 Zotero「附加组件」重装，兼容整个 Zotero 9.x 系列。<br>Mac/Win 用户<b>用同一份 xpi</b>（Zotero 插件是纯 JavaScript，跨平台）。</p>
-      </div>
-
       <div class="card">
         <div class="top"><h5>课本、画册、杂志翻译效果不好？</h5></div>
-        <p class="desc">这不是 bug，是 <b>引擎能力边界</b>。paperflow 是为「标准学术排版」（单/双栏、规范字体、明确段落）设计的。课本/画册/杂志这类「图文混排重、艺术字体多、文字嵌图」的 PDF，常见现象：<br>
-        ① 译文跟图片错位<br>
-        ② 艺术标题被识别成公式跳过<br>
-        ③ 多栏跨页错乱<br>
-        替代方案：用 Google 翻译网页版看翻译稿（不强求保留原排版），或导出文字到 Word 后单独翻译。</p>
+        <p class="desc">这不是 bug，是 <b>引擎能力边界</b>。PaperFlow 是为「标准学术排版」设计的，图文混排重、艺术字体多的 PDF 常见现象：<br>
+        ① 译文跟图片错位 ② 艺术标题被识别成公式跳过 ③ 多栏跨页错乱<br>
+        替代方案：用网页翻译看内容（不强求保留排版），或导出文字到 Word 单独翻译。</p>
       </div>
     </div>
   </section>
 
   <footer>
-    <p>paperflow-desktop · macOS Edition · v2.3.9</p>
-    <p>基于 PDFMathTranslate / MuPDF / PyQt5 ·  <a href="https://github.com/AaronGIG/pdf2zh-desktop">GitHub</a> · 联系作者 QQ: 2994574297@qq.com</p>
-    
-    <p style="margin-top:6px;font-size:11px;color:#aaa">本教程截图来自实际运行的 v2.3.4 · macOS 14 · 1421×894 窗口 · 截图已脱敏</p>
+    <p>PaperFlow · PDF 翻译工作台 · v1.0.0</p>
+    <p>基于 <a href="https://github.com/Byaidu/PDFMathTranslate">PDFMathTranslate</a> / MuPDF / PyQt5 · <a href="https://github.com/GW19ddd/PaperFlow">GitHub</a> · 联系作者: 2994574297@qq.com</p>
+    <p style="margin-top:6px;font-size:11px;color:#aaa">本教程截图来自实际运行的 PaperFlow v1.0.0 · macOS 14 · 1421×894 窗口 · 截图已脱敏</p>
   </footer>
 </div>
 
@@ -794,7 +819,7 @@
 
 <!-- ============ 联系作者 ============ -->
 <div style="position:fixed;bottom:24px;right:24px;z-index:9999;font:13px/1.5 -apple-system,'PingFang SC',sans-serif">
-  <a href="mailto:2994574297@qq.com" style="display:inline-block;background:#fff;border:1.5px solid #232323;border-radius:999px;padding:9px 18px;color:#232323;text-decoration:none;font-weight:600;box-shadow:0 6px 22px rgba(0,0,0,0.16)">📮 联系作者 QQ: 2994574297@qq.com</a>
+  <a href="mailto:2994574297@qq.com" style="display:inline-block;background:#fff;border:1.5px solid #232323;border-radius:999px;padding:9px 18px;color:#232323;text-decoration:none;font-weight:600;box-shadow:0 6px 22px rgba(0,0,0,0.16)">📮 联系作者: 2994574297@qq.com</a>
 </div>
 
 </body>

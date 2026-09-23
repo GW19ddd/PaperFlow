@@ -1,9 +1,14 @@
 # -*- mode: python ; coding: utf-8 -*-
+import os
 
+# 所有路径基于本 spec 所在目录解析（SPECPATH 由 PyInstaller 在构建时注入），
+# 不再写死任何本机绝对路径，换台机器 / 换个目录 clone 都能直接构建。
+SPEC_DIR = os.path.abspath(SPECPATH)
+APP_ROOT = os.path.normpath(os.path.join(SPEC_DIR, os.pardir))
 
 a = Analysis(
-    ['d:/03-Codes/pdf2zh-desktop/launcher_src/_stub.py'],
-    pathex=[],
+    [os.path.join(SPEC_DIR, '_stub.py')],
+    pathex=[SPEC_DIR],
     binaries=[],
     datas=[],
     hiddenimports=[],
@@ -35,5 +40,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['d:/03-Codes/pdf2zh-desktop/assets/paperflow.ico'],
+    icon=[os.path.join(APP_ROOT, 'assets', 'paperflow.ico')],
 )
