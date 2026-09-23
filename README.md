@@ -7,7 +7,7 @@
 <br>
 <br>
 
-# 🌿 PaperFlow · PDF 翻译工作台 v2.3.19
+# 🌿 PaperFlow · PDF 翻译工作台 v1.0.0
 
 ### 开箱即用的 PDF 学术翻译神器 🚀
 
@@ -15,20 +15,10 @@
 
 **🖥️ 支持 Windows + macOS 双平台**
 
-[![Windows](https://img.shields.io/badge/Windows-10/11-0078D6?style=flat-square&logo=windows&logoColor=white)](https://github.com/AaronGIG/pdf2zh-desktop/releases)
-[![macOS](https://img.shields.io/badge/macOS-13.0+-000000?style=flat-square&logo=apple&logoColor=white)](https://github.com/AaronGIG/pdf2zh-desktop/releases)
+[![Windows](https://img.shields.io/badge/Windows-10/11-0078D6?style=flat-square&logo=windows&logoColor=white)](https://github.com/GW19ddd/PaperFlow/releases)
+[![macOS](https://img.shields.io/badge/macOS-13.0+-000000?style=flat-square&logo=apple&logoColor=white)](https://github.com/GW19ddd/PaperFlow/releases)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
-[![Version](https://img.shields.io/badge/Version-2.3.19-blue?style=flat-square)](https://github.com/GW19ddd/PaperFlow/releases)
-
-<br>
-
-<table align="center"><tr><td align="center" style="padding:18px 28px">
-<h3>📘 强烈推荐先看 → <a href="https://aarongig.github.io/pdf2zh-desktop/">完整图文使用教程（macOS）</a></h3>
-<p>真实截图 · 每一步带红圈编号 · 配 API · 扫描件处理 · 常见问题<br>
-<b>第一次使用？看完这一份就够了，省下你折腾两小时的时间。</b><br>
-💬 <i>页面右下角有 AI 客服「小黑猫」在线答疑，问任何使用问题都能秒回</i></p>
-<a href="https://aarongig.github.io/pdf2zh-desktop/"><img src="https://img.shields.io/badge/📘 点 这 里 看 教 程-FF6B35?style=for-the-badge&logoColor=white" alt="使用教程"></a>
-</td></tr></table>
+[![Version](https://img.shields.io/badge/Version-1.0.0-blue?style=flat-square)](https://github.com/GW19ddd/PaperFlow/releases)
 
 <br>
 
@@ -154,8 +144,8 @@
 
 | 平台 | 下载 | 大小 | 启动方式 |
 |------|------|------|---------|
-| 🪟 Windows | [`pdf2zh-desktop-win-v2.3.19.zip`](https://github.com/GW19ddd/PaperFlow/releases/download/v2.3.19/pdf2zh-desktop-win-v2.3.19.zip) | ~290MB | 解压 → 双击 `paperflow.exe` |
-| 🍎 macOS | [`pdf2zh-desktop-mac-v2.3.17.zip`](https://github.com/AaronGIG/pdf2zh-desktop/releases/download/v2.3.17/pdf2zh-desktop-mac-v2.3.17.zip) | ~228MB | 解压 → 双击 `paperflow.app` |
+| 🪟 Windows | [`PaperFlow-win-v1.0.0.zip`](https://github.com/GW19ddd/PaperFlow/releases/download/v1.0.0/PaperFlow-win-v1.0.0.zip) | ~290MB | 解压 → 双击 `paperflow.exe` |
+| 🍎 macOS | [`PaperFlow-mac-v1.0.0.zip`](https://github.com/GW19ddd/PaperFlow/releases/download/v1.0.0/PaperFlow-mac-v1.0.0.zip) | ~228MB | 解压 → 双击 `paperflow.app` |
 
 ### 🖱️ 第二步：启动
 
@@ -165,7 +155,7 @@
   - 🟡 **想要桌面图标 / 开始菜单，建议做一次**：双击 **`install.bat`**（顺带自动检查/安装 VC++ 运行库；跑完就没用了，不做也完全不影响用 `paperflow.exe` 正常使用，只是桌面上不会有图标）
   - 🟡 **遇到问题**：双击 `debug_start.bat`（看启动日志）或 `diagnostic.bat`（系统诊断）；改设置用 `config_manager.bat`
   - 🔴 **卸载**：双击 `uninstall.bat`
-  - ⚠️ `install.bat`/`uninstall.bat`/`debug_start.bat`/`diagnostic.bat`/`config_manager.bat` 这几个是批处理脚本，v2.3.9 起已修复中文 Windows 上的编码乱码问题；`paperflow.exe`/`paperflow.vbs` 不受此类问题影响，追求最稳就选它们
+  - ⚠️ `install.bat`/`uninstall.bat`/`debug_start.bat`/`diagnostic.bat`/`config_manager.bat` 这几个是批处理脚本，已修复中文 Windows 上的编码乱码问题；`paperflow.exe`/`paperflow.vbs` 不受此类问题影响，追求最稳就选它们
 - **macOS**：双击 `paperflow.app`；首次启动若提示「**已损坏，无法打开**」，终端跑一行：`xattr -cr /Applications/paperflow.app`，或 Finder 里**右键 → 打开**
 
 ### 📄 第三步：翻译
@@ -291,167 +281,20 @@
 
 ## 📋 更新日志
 
-### v2.3.19（2026-08-28）— Zotero 联动稳定性修复
+### v1.0.0（2026-09-23）— 首个正式发布版本
 
-- 🔧 **修复「联动 Zotero」复选框等控件点击无响应**：高 DPI 缩放下窗口命中测试（`WM_NCHITTEST`）的物理/逻辑像素错位，导致设置页复选框、放大/缩小按钮以及窗口下半部分区域鼠标点击全部失效；现已统一由 Qt 高 DPI 策略换算坐标（同时移除启动脚本里重复的 `QT_AUTO_SCREEN_SCALE_FACTOR`，消除双重缩放冲突）
-- 🐛 **修复翻译完成后主界面卡死**：Zotero 回写改在后台线程执行，翻译完成立即返回界面，不再阻塞主线程；退出时安全等待回写线程结束，不再崩溃
-- 📦 **仓库整理**：移除已误提交的构建产物、嵌入式 Python 运行时与第三方依赖二进制，源码仓库大幅瘦身；完整可运行包改由 GitHub Release 提供
-
-### v2.3.18（2026-08-25）— Connector 插件升级 v1.0.31
-
-- 🔧 Connector 插件升级 v1.0.31：应用路径选择与偏好设置面板优化，右键联动翻译更稳定
-
-### v2.3.17（2026-08-24）— PaperFlow 品牌焕新
-
-- 🎨 **UI 全面重绘为 macOS 风格**：无边框圆角窗口、自绘标题栏（红绿灯按钮）、左侧图标导航、浅色毛玻璃卡片、胶囊按钮、系统蓝强调色
-- ✨ **软件更名 PaperFlow**，插件更名 **PaperFlow Connector for Zotero**（v1.0.0，作者 gw）
-- 📦 插件 ID 更新为 `paperflow-connector@gw.com`：请在 Zotero 中先卸载旧插件，再安装新 xpi（`paperflow-connector-v1.0.0.xpi`）
-
-### v2.3.17（2026-08-24）— Zotero 联动修复
-
-- 🔧 **修复右键翻译后「Zotero 联动失败」**：桌面端回写函数 `zotero_writeback` 未导入导致 `NameError`，且右键传入的 `--zotero-key` 未保存到窗口实例；现在链接附件（zotero 移动 / zotmoov 等场景）的译文会正确放回原 PDF 同目录并关联回条目
-- 🐛 **修复 Connector 插件链接附件判断**：Zotero 9 的 `LINK_MODE_LINKED_FILE` 常量是 `2`（此前误判为 `3`），链接附件译文改用 `linkFromFile` 放回原目录，不再被复制进 storage
-- ✨ **Connector 插件全新改版 v1.0.0（PaperFlow Connector for Zotero）**：右键菜单、插件设置面板、自动更新（updates.json 指向本仓库）全部可用；`assets/paperflow-connector.xpi` 与 Release 产物同步
-- 🔧 **修复插件设置面板「浏览应用路径」无效**：Zotero 7/9 移除了扩展里的 `Components`，改用 `Zotero.FilePicker`，现在可以自己选择 `paperflow.exe` 路径（也支持手动输入）
-
-### v2.3.16（2026-08-21）
-
-- ✨ **PDF 预览右键菜单新增旋转**：新增"顺时针旋转"/"逆时针旋转"，方便核对表格等内容的排版方向是否正确；只影响预览显示，不修改 PDF 文件本身；切到新文件会自动重置旋转角度；旋转状态下暂不支持高亮框选（屏幕坐标到 PDF 坐标的换算目前只按缩放算，没考虑旋转，避免高亮位置算错）
-
-### v2.3.15（2026-08-20）
-
-- 🔧 **表格翻译改用 PyMuPDF `insert_htmlbox` 插入译文**：一次性解决三个长期存在的表格排版问题——① 之前手写的字号估算和实际排版有偏差，同一张表里长短不一的译文字号此起彼伏，现在用 `scale_low=0` 让 PyMuPDF 按真实字体度量自动缩放；② 之前整段文字只能整体选中文或西文字体，中英混排内容要么中文变问号、要么英文字母间距被拉得很宽，现在按字符自动做中西文字体回退；③ 旋转方向经过与原表格未改动内容逐字比对校准，不再出现"有的顺时针有的逆时针"
-- 🐛 **修复表格翻译导致输出文件暴涨到几百 MB**：`insert_htmlbox` 每次调用都会给中文内容独立内嵌一份完整字体子集、不会跨单元格复用，一张表几十上百个格子就是几十上百份几乎重复的字体数据；加上原来用增量保存（`saveIncr`）不做垃圾回收，实测 166 个单元格能把 5.85MB 的文件撑到 313MB。现在改成完整重写并加 `garbage=4` 垃圾回收合并重复对象，同样的内容文件只多出几 MB
-- 🔧 修复部分学术论文里 "≥" 等数学符号因源 PDF 字体编码缺陷被提取成 "$"、进而被翻译成"⋯美元"这种莫名其妙的措辞（原理与已知的 "45°" 提取成 "�" 是同一类源文件缺陷，通过识别"整份文档里只产出这一个可疑字符"的嵌入符号字体来定位并修正，不会误伤表格里真实的美元金额）
-
-### v2.3.14（2026-08-20）
-
-- 🔧 **表格翻译支持整表旋转排版**：部分学术论文的表格整体旋转 90°（不只是列标题，连数据单元格都是转向的），之前译文一律横排插入，方向和原表格对不上，还会跟相邻格子重叠成一团。现在会识别每个单元格的真实排版方向，译文按相同方向旋转插入
-- 🔧 修复统计区间数值（如 "87.2 (81.8–91.2)"）被翻译服务做无意义换行重排，触发没必要的重新插入、和相邻单元格挤在一起
-- 🔧 修复译文字号忽大忽小：改成以单元格原文字号封顶，不再各自独立按译文长度反推字号
-- 🔧 新增 `--tables=<页码>` 命令行参数，供自动化测试/脚本化调用（例如 Zotero 联动）勾选表格翻译并指定页码
-
-### v2.3.13（2026-08-20）
-
-- 🔧 **表格翻译结果改为持久弹窗提示**：之前不管表格翻译成功还是失败，都只往状态栏发一条一闪而过的文字，很快被"翻译完成"覆盖掉，用户基本看不到——这正是 v2.3.11 那个"勾了却悄无声息失败"问题真正没堵上的部分。现在翻译完成后，如果表格翻译遇到问题、没检测到表格、或检测到表格但没有单元格被翻译，都会弹出一个不会自动消失的提示，说明具体原因（`--auto`/Zotero 无人值守唤起时改为写入调试日志，不弹窗阻塞）
-
-### v2.3.12（2026-08-20）
-
-- ✨ **表格翻译支持单独指定页码**：正文可以整篇正常翻译（页码范围不受限），同时单独框出"只对第几页做表格单元格翻译"，两者互不影响。留空则跟随主翻译的页码范围（v2.3.11 行为不变）
-
-### v2.3.11（2026-08-20）
-
-- 🔧 **修复"翻译表格内容"选项勾了也不生效**：Mac 端表格翻译走的是一套独立实现，固定调用需要单独配置 API Key 的"AI 助手"服务，和主界面选的翻译服务（哪怕是完全不需要 Key 的 Google/Bing）是两回事；没配这个额外 Key 时每个单元格都会静默失败、界面上毫无提示。现已改成直接复用主翻译服务，不再需要额外配置
-- 🔧 同时修复：纯数字/日期单元格（如"893"、"2021"）不再被误翻译；译文字号改成按文本量自适应，减少挤成一堆换行的情况；表格翻译现在会遵守主翻译设定的页码范围，不再无视页码限制扫全篇
-
-### v2.3.10（2026-08-19）
-
-- 🔧 **修复竖排表格翻译后文字乱序堆叠**（issue #28）：论文里常见的旋转 90° 的竖排表头，此前会被版面检测误判成"同一个公式"整体拼接，导致相距很远的多个旋转单词挤在一起、文字被拆散；同时旋转角度本身也没有被保留，画出来是正立字母摞成一列。现已分别修复：按字符间距强制断段 + 保留原始旋转矩阵，竖排表格恢复正常显示
-
-### v2.3.9（2026-08-10）
-
-- 🔧 **修复 Windows 安装脚本乱码崩溃**：`install.bat` 等批处理脚本在部分中文 Windows 上会因编码问题乱码崩溃（详见下方「启动」章节说明）；同时调整首次启动的推荐方式，`paperflow.exe` 现在是首选，`install.bat` 降级为可选的快捷方式创建工具
-
-### v2.3.8（2026-08-10）
-
-- 🔧 **修复某些 PDF 翻译到一半崩溃**：论文附录里常见的小尺寸图表页，会因版面检测分辨率过低导致底层 ONNX 报错（`TopK k argument...`），使整个翻译任务崩溃；现已修复，正常页面不受影响
-
-### v2.3.7（2026-08-08）
-
-- 🔧 **Zotero 写回不再留冗余文件**：之前译文会先复制进原文献的 Zotero storage 文件夹再关联附件，关联成功后那份复制品就成了没人引用的孤儿文件。现在直接从本地输出路径关联，只有关联失败时才会保留一份本地兜底副本，绝不误删翻译产物
-- 🔧 **修复 xpi 自动更新地址配置错误**（之前一直指向别的项目，形同虚设），Connector 插件升到 v1.0.19
-- ✨ **新增桌面 App 检查更新**：启动后台静默检测新版本，只提示不自动下载替换任何文件
-
-### v2.3.6（2026-08-01）
-
-- 🔧 **修复自定义 / OpenAI 兼容 API（含硅基流动等）译文混入译者注**：给所有 OpenAI 兼容服务加上强约束提示词 + 输出兜底清洗，不再冒出「（注：…）」这类多余解释（[#27](https://github.com/AaronGIG/pdf2zh-desktop/issues/27)）
-
-### v2.3.5（2026-07-31）
-
-- 🔧 **修复 DeepSeek V4 翻译问题**：V4 系列裸调默认走「思考模式」导致翻译慢/偶发漏译/费用上涨，现自动关闭思考模式退回直出；默认模型换成 `deepseek-v4-flash`
-
-### v2.3.4（2026-07-31）
-
-- 🔧 **Zotero 右键翻译格式选择修复**：之前无论选哪种格式，回写 Zotero 的都只有中外并排，现在严格跟随右键菜单选择
-- ✨ **新增后台静默翻译**：Zotero 右键菜单可勾选，翻译时不弹窗不抢焦点，完成后自动关窗
-
-### v2.3.3（2026-07-26）— 修复部分期刊 PDF（ICC 颜色空间）译文页渲染成大片红色
-
-### v2.3.2（2026-07-20）— Zotero 右键翻译完整链路修复（Zotero 9 兼容 + Windows 唤起参数转发）
-
-### v2.3.1（2026-07-17）— Zotero 子附件标题去重 + macOS Unicode 路径匹配修复
-
-### v2.3.0（2026-07-17）
-
-- ✨ **新增 Zotero 右键翻译**：不用打开 paperflow，Zotero 里对 PDF 右键直接翻译，自动作为子附件加回原文献
-- ✨ 支持单文件输出格式选择（仅并排 / 仅双语 / 仅译文）
-
-### v2.2.6（2026-04-28）— API Key 配置修复 + DeepSeek V4 模型支持 + 内置 OCR 引擎升级
-
-### v2.2.5（2026-04-17）— Zotero 9 适配 + 插件兼容性修复
-
-### v2.2.3（2026-04-08）— Zotero 联动修复 + 高分屏（HiDPI）显示优化
-
-### v2.2.2（2026-04-07）— HiDPI 清晰预览 + 多屏适配
-
-### v2.2.1（2026-04-06）— Windows 端问题修复
-
-### v2.2.0（2026-04-06）
-
-#### Zotero 深度联动
-- Zotero 条目/PDF 附件拖拽识别（解析 x-moz-custom-clipdata MIME）
-- 翻译完成自动回写 + 通过插件自动关联附件
-- 一键安装 PaperFlow Connector 插件（自动写 extensions.json + 重启 Zotero）
-- 附件标题带格式标签（`side by side - 论文名`）
-- 智能数据目录检测（读 prefs.js 自定义路径 + 多磁盘扫描 + 选最大库）
-- 支持内置存储 / 绝对链接 / 相对链接三种附件格式
-
-#### UI 优化
-- 全新 UI（克莱因蓝配色 + 圆角卡片 + 微软雅黑）
-- API 配置改为悬浮弹窗，切换服务零跳动
-- 提示词 / 术语库改为弹窗编辑
-- 连续滚动 PDF 预览（懒加载）
-- 标签页三等分 + 使用说明标签页
-- 字号切换（小/中/大）
-- 缩略图面板自适应 + 页码标注
-- 历史记录防抖 + 右键菜单（打开目录/复制路径）
-- 翻译完成自动清空文件列表
-- 窗口自适应屏幕分辨率
-
-#### 翻译能力
-- 独立表格翻译管线（按单元格翻译 + 自适应字号）
-- 独立图注翻译管线
-- 35 种语言支持 + 源语言自动识别
-- 自动检测扫描件 + 翻译前预检
-- 预估剩余时间 + 崩溃恢复 + 批量失败重试
-
-#### 稳定性
-- 修复取消翻译闪退
-- 修复 ollama 导入阻塞（延迟导入）
-- OnnxRuntime 8 秒超时机制
-- PDF 预览快速切换 150ms 防抖
-- 历史记录 200ms 防抖
-- 删除/清空历史不再闪退
-
-### v2.0.0（2026-04-03）
-
-- 首个功能完整版本
-- 20+ 翻译服务 + AI 配置面板
-- OCR / 表格翻译 / 扫描版支持
-- 术语库 + 自定义提示词
-- 连续滚动预览 + 拖放 + 批量翻译
-
-### v1.0.0（2026-03-22）
-
-- 首个公开发布版本
+- ✨ **PDF 翻译工作台正式发布**：Windows / macOS 双平台，解压即用，无需安装
+- 🌐 **内置 20+ 翻译服务**：Google / Bing 免费直连；DeepSeek、OpenAI 兼容、阿里 qwen-mt 等可配置 API Key
+- 📐 **保留原始排版**：单语副本 + 双语对照同时输出，公式与图表不错位
+- 📄 **扫描件与表格**：OCR 自动识别、表格单元格翻译、扫描版白底处理
+- 📚 **术语库与自定义提示词**：术语对照表约束专业词汇，提示词控制翻译风格
+- 📁 **批量翻译**：拖入整个文件夹，逐文件独立追踪结果
+- 🔗 **Zotero 联动**：右键直接翻译，译文自动关联回条目，插件支持自动更新
+- 🔧 **稳定性**：高分屏适配、翻译缓存断电续接、取消不再闪退、Zotero 回写后台执行
 
 ---
 
 ## 👨‍💻 关于本项目
-
-**桌面版作者**：[@AaronGIG](https://github.com/AaronGIG)
-
-桌面版的独立打包、GUI 增强、便携化改造、Zotero 联动等功能由 AaronGIG 独立维护开发 🚀
 
 **核心翻译引擎**：[PDFMathTranslate](https://github.com/Byaidu/PDFMathTranslate)（EMNLP 2025），感谢原项目的贡献 🤝
 
@@ -463,6 +306,6 @@
 
 **专注交付生产级的垂直学术公共品** 🍀
 
-[GitHub](https://github.com/AaronGIG/pdf2zh-desktop) · [最新版本](https://github.com/AaronGIG/pdf2zh-desktop/releases/latest) · [反馈](https://github.com/AaronGIG/pdf2zh-desktop/issues) · [联系作者](mailto:2994574297@qq.com)
+[GitHub](https://github.com/GW19ddd/PaperFlow) · [最新版本](https://github.com/GW19ddd/PaperFlow/releases/latest) · [反馈](https://github.com/GW19ddd/PaperFlow/issues) · [联系作者](mailto:2994574297@qq.com)
 
 </div>

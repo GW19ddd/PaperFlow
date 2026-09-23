@@ -209,10 +209,6 @@ paperflow-desktop-win/
 
 ## 👨‍💻 About This Project
 
-**Desktop version author**: [@AaronGIG](https://github.com/AaronGIG)
-
-The standalone packaging, GUI enhancements, portable design, and smart diagnostics are maintained by AaronGIG 🚀
-
 **Core translation engine**: [PDFMathTranslate](https://github.com/Byaidu/PDFMathTranslate) (EMNLP 2025) — thanks to the original project 🤝
 
 ---
