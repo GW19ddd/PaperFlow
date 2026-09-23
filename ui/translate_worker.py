@@ -10,6 +10,92 @@ import fitz  # PyMuPDF
 from PyQt5.QtCore import QThread, pyqtSignal
 
 
+def _apply_local_proxy_fallback(status_cb=None) -> str:
+    """v2.3.17: 翻译前自动接入本地代理兜底。
+
+    背景（issue #35）：Google/Gemini 等翻译服务需要科学上网。Clash 等代理软件
+    在运行、端口正常监听，但用户没开「系统代理」/TUN 时，Python requests 会
+    直连 www.google.com → WinError 10061 连接被拒，整篇翻译失败。
+
+    策略（只在确实需要时才动手）：
+    1. 已设置 HTTP(S)_PROXY/ALL_PROXY 环境变量 → 尊重现状，不动；
+    2. 系统代理开关已打开（注册表 ProxyEnable=1）→ requests 自己会走系统代理，不动；
+    3. 否则按优先级探测本地代理端口：注册表残留的 ProxyServer（用户之前用过的）
+       优先，其次常见端口（Clash 7897/7890、v2rayN 10809/10808 等）。
+       找到确实在监听的端口 → 注入 HTTPS_PROXY/HTTP_PROXY，并设置
+       NO_PROXY 保护本机服务（DeepLX/Ollama 等走 localhost 的不能过代理）。
+    返回生效的代理 URL（没生效返回空串），便于调用方提示用户。
+    """
+    import sys as _sys
+
+    # 已有显式代理配置 → 不掺和
+    _env_keys = ("HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY",
+                 "http_proxy", "https_proxy", "all_proxy")
+    if any(os.environ.get(k) for k in _env_keys):
+        return ""
+
+    # 探测本机端口是否在监听（connect 成功即可，不发任何数据）
+    def _port_alive(port: int) -> bool:
+        import socket as _socket
+        try:
+            with _socket.create_connection(("127.0.0.1", port), timeout=0.25):
+                return True
+        except OSError:
+            return False
+
+    candidates = []  # [(port, 来源说明)]
+
+    if _sys.platform == "win32":
+        try:
+            import winreg
+            with winreg.OpenKey(
+                winreg.HKEY_CURRENT_USER,
+                r"Software\Microsoft\Windows\CurrentVersion\Internet Settings",
+            ) as key:
+                try:
+                    enable, _ = winreg.QueryValueEx(key, "ProxyEnable")
+                except FileNotFoundError:
+                    enable = 0
+                # 系统代理开着 → requests 自动会用，不需要兜底
+                if enable:
+                    return ""
+                try:
+                    server, _ = winreg.QueryValueEx(key, "ProxyServer")
+                except FileNotFoundError:
+                    server = ""
+            # 残留配置形如 "127.0.0.1:7897" 或 "http=...;https=..."，取端口部分
+            if server and "=" not in server and ":" in server:
+                try:
+                    candidates.append((int(server.rsplit(":", 1)[1]), "系统残留配置"))
+                except ValueError:
+                    pass
+        except OSError:
+            pass
+
+    for port in (7897, 7890, 7891, 10809, 10808, 1080, 2080, 8889):
+        candidates.append((port, "常见端口"))
+
+    for port, src in candidates:
+        if 0 < port < 65536 and _port_alive(port):
+            proxy_url = f"http://127.0.0.1:{port}"
+            os.environ["HTTP_PROXY"] = proxy_url
+            os.environ["HTTPS_PROXY"] = proxy_url
+            # 本机地址不过代理（DeepLX/Ollama 等 localhost 服务不能被劫走）
+            os.environ.setdefault(
+                "NO_PROXY", "localhost,127.0.0.1,::1"
+            )
+            os.environ.setdefault(
+                "no_proxy", "localhost,127.0.0.1,::1"
+            )
+            if status_cb:
+                try:
+                    status_cb(f"未开系统代理，已自动使用本地代理 127.0.0.1:{port}")
+                except Exception:
+                    pass
+            return proxy_url
+    return ""
+
+
 def _table_cell_should_translate(text: str) -> bool:
     """判断表格单元格文字是否需要翻译（跳过纯数字/日期/编号/单字符），
     和 core/site-packages/pdf2zh/high_level.py 里 Win 端的 _should_translate 逻辑一致。
@@ -141,6 +227,176 @@ def _table_cell_texts_equivalent(a: str, b: str) -> bool:
     return _norm(a) == _norm(b)
 
 
+# ─── 参考文献检测（跳过参考文献，保持原文不动） ──────────────
+
+_REFERENCE_HEADING_RE = re.compile(
+    r'^\s*(?:\d{1,2}[\.\s]*)?'
+    r'(?:references?(?:\s+and\s+notes)?|bibliography|works\s+cited|'
+    r'literature\s+cited|cited\s+literature|references\s+list|'
+    r'参考文献|引用文献|引用书目)'
+    r'\s*:?\s*$',
+    re.IGNORECASE)
+
+_APPENDIX_HEADING_RE = re.compile(
+    r'^\s*(?:(?:[A-Z]|\d{1,2})[\.\s]*)?'
+    r'(?:appendix|appendices|supplement(?:ary|al)?|'
+    r'supporting\s+information|附录|补充材料)\b',
+    re.IGNORECASE)
+
+# 另一类常见附录标题：字母编号 + 标题，如 "A. Per-Discipline Score Breakdown"、
+# "B.1. Tool-Type Distribution"。这类不含 "Appendix" 字样，需单独识别。
+# 刻意不开 IGNORECASE，避免误伤 "i.e. xxx" 这类正文片段。
+_APPENDIX_LETTER_RE = re.compile(r'^[A-Z]\.(?:\d+(?:\.\d+)*)?\s+[A-Z]')
+
+# 标题样式（首字母大写，允许其余大小写）
+_TITLE_LIKE_RE = re.compile(r'^[A-Z][A-Za-z0-9\-\s,\(\):\.]{4,70}$')
+
+
+def _page_has_letter_appendix(page) -> bool:
+    """识别"字母独占一行 + 标题独占一行"的两行式附录标题。
+
+    例：
+        A
+        Dataset Curation
+    这类标题既不含 "Appendix" 字样，也不是 "A." 带点形式，只能靠 block 结构识别。
+    只在参考文献起始页之后使用，且要求恰好两行、首行是单个大写字母、
+    次行是标题样式——收紧到这一步后误判概率很低。
+    """
+    try:
+        d = page.get_text("dict")
+    except Exception:
+        return False
+    for blk in d.get("blocks", []):
+        lines = blk.get("lines", [])
+        if len(lines) != 2:
+            continue
+        texts = [
+            "".join(sp.get("text", "") for sp in ln.get("spans", [])).strip()
+            for ln in lines
+        ]
+        if not texts[0] or not texts[1]:
+            continue
+        if re.fullmatch(r'[A-Z]', texts[0]) and _TITLE_LIKE_RE.match(texts[1]):
+            return True
+    return False
+
+
+def _page_has_heading(page, pattern) -> bool:
+    """判断页面上是否存在"独立成行的短标题"匹配 pattern。
+
+    要求该行文字很短（<= 40 字符），且所在文字块的行数很少（标题通常独立成块）。
+    这两个限制是为了避免正文句子里的 "references" 一词被误判成标题。
+    """
+    try:
+        d = page.get_text("dict")
+    except Exception:
+        return False
+    for blk in d.get("blocks", []):
+        lines = blk.get("lines", [])
+        if not lines or len(lines) > 3:
+            continue
+        for ln in lines:
+            text = "".join(sp.get("text", "") for sp in ln.get("spans", [])).strip()
+            if not text or len(text) > 48:
+                continue
+            if pattern.match(text):
+                return True
+    return False
+
+
+def _is_toc_like_page(page) -> bool:
+    """目录页特征：大量"纯页码"短行。
+
+    目录排版常把"标题"和"页码"拆成两行（如 'Bibliography' / '152'），
+    于是目录里的 Bibliography / References 也会被 _page_has_heading 命中。
+    真参考文献页是一行行完整条目，不会出现大量孤立数字行，所以用这个特征区分。
+    """
+    try:
+        txt = page.get_text()
+    except Exception:
+        return False
+    if not txt:
+        return False
+    lines = [l.strip() for l in txt.splitlines() if l.strip()]
+    if len(lines) < 10:
+        return False
+    numeric = sum(1 for l in lines if re.fullmatch(r'\d{1,4}', l))
+    return (numeric / len(lines)) > 0.3
+
+
+def detect_reference_pages(doc_path, total_pages=None) -> set:
+    """检测参考文献（References / Bibliography / 参考文献）所在的页码集合（0-indexed）。
+
+    返回的这些页会被排除在主翻译之外。pdf2zh 对未指定的页完全不改内容流，
+    等价于"参考文献整段保持原文"：排版、编号、上标、超链接全部原样保留。
+
+    只在文档后半段开始扫描（参考文献不会出现在前半段），避免正文里引用
+    "references" 一词造成误判；若参考文献标题之后又出现 Appendix / 附录 等
+    标题，则只排除到该标题之前，附录部分仍然正常翻译。
+    """
+    try:
+        doc = fitz.open(doc_path)
+    except Exception:
+        return set()
+    try:
+        if total_pages is None:
+            total_pages = len(doc)
+        if total_pages <= 0:
+            return set()
+        # 从第 2 页开始收集所有候选（第 1 页不可能是参考文献）。
+        # 不能只看后半段：arXiv/会议论文常见"正文很短、附录很长"——
+        # 60 页的论文 REFERENCES 就出现在第 11 页，限定后半段会直接漏掉。
+        # 目录页会被 _is_toc_like_page 滤掉。
+        cands = [
+            pno for pno in range(1, total_pages)
+            if _page_has_heading(doc[pno], _REFERENCE_HEADING_RE)
+            and not _is_toc_like_page(doc[pno])
+        ]
+        if not cands:
+            return set()
+        # 取最后一个候选：目录里的 "Bibliography ... 152" 属于干扰项，
+        # 真正的参考文献章节总在它后面
+        ref_start = cands[-1]
+        end = total_pages
+        for pno in range(ref_start + 1, total_pages):
+            if (_page_has_heading(doc[pno], _APPENDIX_HEADING_RE)
+                    or _page_has_heading(doc[pno], _APPENDIX_LETTER_RE)
+                    or _page_has_letter_appendix(doc[pno])):
+                end = pno
+                break
+        excluded = set(range(ref_start, end))
+        # 兜底：排除比例过大（超过 70%）几乎必然是误判——宁可不动，
+        # 也不要把大半篇正文当成"参考文献"给跳过
+        if len(excluded) > max(3, int(total_pages * 0.7)):
+            return set()
+        return excluded
+    except Exception:
+        return set()
+    finally:
+        try:
+            doc.close()
+        except Exception:
+            pass
+
+
+def _format_page_list(pages) -> str:
+    """把升序页码列表压成 '1-3, 7, 9-10' 的紧凑文案（1-based）。"""
+    if not pages:
+        return ""
+    ranges = []
+    start = prev = pages[0]
+    for p in pages[1:]:
+        if p == prev + 1:
+            prev = p
+            continue
+        ranges.append((start, prev))
+        start = prev = p
+    ranges.append((start, prev))
+    return ", ".join(
+        f"{a + 1}-{b + 1}" if b > a else f"{a + 1}" for a, b in ranges
+    )
+
+
 # ─── 语言 / 服务映射 ─────────────────────────────────────────
 
 LANG_MAP = {
@@ -187,6 +443,86 @@ OUTPUT_MODES = {
     "仅翻译 (Mono)": "mono",
     "左右并排 (Side by Side)": "side_by_side",
 }
+
+
+# ─── 翻译失败时的友好提示 ────────────────────────────────────
+
+# 判定"网络/代理层面"连接故障的关键词（命中即认为可重试/可降级）
+_CONN_ERROR_KEYS = (
+    "ssleoferror", "unexpected_eof_while_reading", "eof occurred in violation",
+    "ssl", "connectionerror", "max retries exceeded", "newconnectionerror",
+    "connection abort", "connection reset", "connection refused",
+    "connection aborted", "remotedisconnected", "protocolerror",
+    "incompleteread", "timed out", "timeout", "proxy",
+    "failed to resolve", "name or service not known",
+)
+
+
+class _CancelledError(Exception):
+    """内部分块循环用的取消信号。"""
+
+
+def _service_display(service: str) -> str:
+    """服务标识（如 'google'）→ 界面显示名（如 'Google 翻译'）。"""
+    key = (service or "").split(":", 1)[0]
+    for disp, svc_key in SERVICE_MAP.items():
+        if svc_key == key:
+            return disp
+    return key or "翻译服务"
+
+
+def _is_connection_error(exc: Exception) -> bool:
+    """判断异常是否属于连接/代理层面的故障（这类才值得降级重试）。"""
+    s = f"{type(exc).__name__} {exc}".lower()
+    return any(k in s for k in _CONN_ERROR_KEYS)
+
+
+def _friendly_error(exc: Exception, service: str) -> str:
+    """把底层连接类异常翻译成用户能看懂的中文排查指引。
+
+    返回空字符串表示"不是连接类错误"，交给调用方走原有的报错路径。
+    重点是把「一堆 urllib3/traceback」换成"到底哪儿出了问题、下一步该做什么"。
+    """
+    if not _is_connection_error(exc):
+        return ""
+    raw = str(exc)
+    host = ""
+    m = (re.search(r"host=['\"]([^'\"]+)", raw)
+         or re.search(r"host=([^\s,)]+)", raw)
+         or re.search(r"https?://([^\s/'\"]+)", raw))
+    if m:
+        host = m.group(1)
+    svc = _service_display(service)
+    low = raw.lower()
+    target = host or svc
+    if ("ssl" in low or "eof occurred in violation" in low
+            or "ssleoferror" in low):
+        head = f"🔌 与「{svc}」的连接在 TLS 握手阶段被中断（SSL EOF）。"
+        advice = (
+            "这几乎总是**代理/节点**的问题，不是文档或软件本身的错误：\n"
+            "  • 规则模式下，该域名走的出口节点对目标服务不可用\n"
+            "    （节点被目标服务风控、或节点本身无响应）\n"
+            "  • 处理办法：在 Clash / V2Ray 里换一个更稳的节点；\n"
+            "    或直接改用「Bing 翻译」（走微软服务，通常更稳）\n\n"
+            f"目标：{target}\n原始错误：{raw}"
+        )
+    elif "timed out" in low or "timeout" in low:
+        head = f"⏱ 连接「{svc}」超时。"
+        advice = (
+            "可能是网络不稳或节点拥塞：\n"
+            "  • 稍后重试，或在代理里换一个节点\n"
+            "  • 大文件建议开启「分块翻译」并适当加大块间隔\n\n"
+            f"目标：{target}\n原始错误：{raw}"
+        )
+    else:
+        head = f"🌐 无法连接到「{svc}」。"
+        advice = (
+            "请检查网络与代理设置：\n"
+            "  • 规则模式下该域名可能被判为直连，而直连不通\n"
+            "  • 换一个节点，或改用「Bing 翻译」\n\n"
+            f"目标：{target}\n原始错误：{raw}"
+        )
+    return f"{head}\n\n{advice}"
 
 
 def detect_zotero_source(file_path: str):
@@ -820,6 +1156,7 @@ class TranslateWorker(QThread):
                  chunk_size=50, chunk_delay=10, envs=None,
                  skip_subset_fonts=False, ignore_cache=False,
                  scan_mode=False, translate_tables=False, table_pages=None, ocr_mode=False,
+                 skip_references=False, auto_fallback=True,
                  parent=None):
         super().__init__(parent)
         self.file_path = file_path
@@ -839,6 +1176,10 @@ class TranslateWorker(QThread):
         self.translate_tables = translate_tables
         self.table_pages = table_pages
         self.ocr_mode = ocr_mode
+        # v2.3.16: 跳过参考文献（参考文献整段保持原文，含编号/上标/超链接）
+        self.skip_references = skip_references
+        # v2.3.16: Google 连接类失败时自动降级用 Bing 重试一次
+        self.auto_fallback = auto_fallback
         self.cancelled = False
         self._cancel_event = None
 
@@ -856,6 +1197,10 @@ class TranslateWorker(QThread):
         except ImportError as e:
             self.error.emit(f"模块加载失败: {e}")
             return
+
+        # v2.3.17: 网络兜底 — 系统代理没开但本地代理软件在跑时，自动接入，
+        # 否则 Google 翻译会 WinError 10061 直连被拒（详见 _apply_local_proxy_fallback）
+        _apply_local_proxy_fallback(status_cb=self.status.emit)
 
         # API Key 预检查（修复 issue #16: 精确检查当前 service 对应的 key 字段）
         if self.service in self.SERVICES_NEED_KEY:
@@ -925,6 +1270,22 @@ class TranslateWorker(QThread):
                 self.status.emit("正在 OCR 识别…")
                 actual_file = self._ocr_preprocess(actual_file)
 
+            # ── 计算"这次真正要翻译的页" ──
+            # v2.3.16: 用户选的页码 与「跳过参考文献」在这里合并成一份显式页列表。
+            # pdf2zh 对不在此列表里的页完全不改内容流 → 参考文献页保持原文：
+            # 排版、编号、上标、超链接全部原样，不会被重排或翻译。
+            translate_pages, ref_pages = self._resolve_translate_pages(total_pages)
+            if ref_pages:
+                self.status.emit(
+                    f"跳过参考文献：第 {_format_page_list(sorted(ref_pages))} 页保持原文"
+                )
+            if not translate_pages:
+                self.error.emit(
+                    "没有需要翻译的页面：所选页码范围与「跳过参考文献」完全重叠，"
+                    "或文档为空。"
+                )
+                return
+
             # 翻译参数基础模板（pdf2zh 1.8.9 兼容）
             base_param = dict(
                 files=[actual_file],
@@ -949,33 +1310,45 @@ class TranslateWorker(QThread):
                     pass
 
             # ══════════════════════════════════════════
-            #  分块翻译（和原版 AaronGIG 逻辑一致）
-            #  条件：开启分块 AND 翻译全部页面（无自定义页码）
+            #  执行翻译（分块 or 直接）— 抽成函数，便于失败后降级重试
             # ══════════════════════════════════════════
-            if self.chunk_enabled and self.pages is None:
-                num_chunks = (total_pages + self.chunk_size - 1) // self.chunk_size
+            def _run_translation(service_name):
+                """跑一次完整翻译，返回 pdf2zh 的结果列表。
+
+                v2.3.16: 无论分块与否，这里始终传**显式页列表**（不再用
+                pages=None 表示全部）——否则最后合成那一步会把「跳过参考文献」
+                排除掉的页又翻一遍。分块时按 translate_pages 切片，页序保持升序。
+                """
+                param = dict(base_param)
+                param["service"] = service_name
+                param["callback"] = on_progress
+
+                use_chunk = (
+                    self.chunk_enabled
+                    and self.pages is None
+                    and len(translate_pages) > self.chunk_size
+                )
+                if not use_chunk:
+                    self.status.emit("正在翻译…")
+                    param["pages"] = translate_pages
+                    return translate(**param)
+
+                chunks = [translate_pages[i:i + self.chunk_size]
+                          for i in range(0, len(translate_pages), self.chunk_size)]
+                num_chunks = len(chunks)
                 self.status.emit(
-                    f"分块翻译: {total_pages} 页 → {num_chunks} 块 "
+                    f"分块翻译: {len(translate_pages)} 页 → {num_chunks} 块 "
                     f"(每块 {self.chunk_size} 页, 间隔 {self.chunk_delay}s)"
                 )
-
-                for chunk_idx in range(num_chunks):
+                for chunk_idx, chunk_pages in enumerate(chunks):
                     if self.cancelled:
-                        self.error.emit("已取消")
-                        return
-
-                    start_page = chunk_idx * self.chunk_size
-                    end_page = min(start_page + self.chunk_size, total_pages)
-                    chunk_pages = list(range(start_page, end_page))
-
+                        raise _CancelledError()
                     self.status.emit(
                         f"第 {chunk_idx+1}/{num_chunks} 块 "
-                        f"(第 {start_page+1}-{end_page} 页)…"
+                        f"(第 {chunk_pages[0]+1}-{chunk_pages[-1]+1} 页)…"
                     )
-
-                    base_param["pages"] = chunk_pages
-                    base_param["callback"] = on_progress
-                    translate(**base_param)
+                    param["pages"] = chunk_pages
+                    translate(**param)
 
                     # 块间延迟（防限流 — 和原版一致，逐秒倒计时）
                     if self.chunk_delay > 0 and chunk_idx < num_chunks - 1 and not self.cancelled:
@@ -985,20 +1358,26 @@ class TranslateWorker(QThread):
                             self.status.emit(f"暂停 {sec} 秒，避免限流…")
                             time.sleep(1)
 
-                # 最终合成：pages=None，利用缓存，速度很快
+                # 最终合成：命中缓存所以很快；依旧只跑 translate_pages，
+                # 参考文献页保持原文
                 self.status.emit("正在利用缓存合成完整文件…")
-                base_param["pages"] = None
-                base_param["callback"] = on_progress
-                results = translate(**base_param)
+                param["pages"] = translate_pages
+                return translate(**param)
 
-            # ══════════════════════════════════════════
-            #  直接翻译（无分块 或 自定义页码）
-            # ══════════════════════════════════════════
-            else:
-                self.status.emit("正在翻译…")
-                base_param["pages"] = self.pages  # None = 全部, list = 指定
-                base_param["callback"] = on_progress
-                results = translate(**base_param)
+            try:
+                results = _run_translation(self.service)
+            except _CancelledError:
+                self.error.emit("已取消")
+                return
+            except Exception as e:
+                # ── 主服务连接类失败 → 自动降级到 Bing 重试一次 ──
+                if (self.auto_fallback
+                        and (self.service or "").split(":", 1)[0] == "google"
+                        and _is_connection_error(e)):
+                    self.status.emit("⚠️ Google 翻译连接失败，自动改用 Bing 重试一次…")
+                    results = _run_translation("bing")
+                else:
+                    raise
 
             if self.cancelled:
                 self.error.emit("已取消")
@@ -1067,6 +1446,12 @@ class TranslateWorker(QThread):
         except KeyError as e:
             self.error.emit(f"缺少 API Key: {e}。请在「设置」中填写对应服务的密钥。")
         except Exception as e:
+            # v2.3.16: 连接/代理类故障 → 换成中文排查指引，
+            # 不再把一长串 urllib3 traceback 直接甩给用户
+            friendly = _friendly_error(e, self.service)
+            if friendly:
+                self.error.emit(friendly)
+                return
             import traceback
             tb = traceback.format_exc()
             # 取最后一行有意义的错误信息
@@ -1083,6 +1468,25 @@ class TranslateWorker(QThread):
                     os.remove(actual_file)
                 except OSError:
                     pass
+
+    # ── 待翻译页范围解析 ──
+
+    def _resolve_translate_pages(self, total_pages):
+        """把"用户选的页码"与「跳过参考文献」合并成最终的待翻译页列表。
+
+        返回 (pages: list[int], excluded_ref_pages: set[int])。
+        excluded 非空时，调用方会告诉用户"哪几页保持原文"。
+        """
+        if self.pages is None:
+            base = list(range(total_pages))
+        else:
+            base = [p for p in self.pages if 0 <= p < total_pages]
+        excluded = set()
+        if self.skip_references:
+            excluded = detect_reference_pages(self.file_path, total_pages)
+            if excluded:
+                base = [p for p in base if p not in excluded]
+        return base, excluded
 
     # ── OCR 预处理：纯图片扫描件添加不可见文字层 ──
 

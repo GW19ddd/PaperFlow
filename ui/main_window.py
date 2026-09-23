@@ -3594,6 +3594,17 @@ class TranslatePage(QWidget):
         self.ocr_mode_check = QCheckBox("OCR 识别")
         self.ocr_mode_check.setToolTip("对纯图片扫描件先进行 OCR 文字识别再翻译。\n需要额外处理时间，普通 PDF 请勿勾选。")
         r5.addWidget(self.ocr_mode_check)
+        # v2.3.16: 参考文献整段保持原文（不翻译、不重排）——
+        # 编号上标、内部超链接、DOI 链接全部原样可点。
+        self.skip_ref_check = QCheckBox("跳过参考文献")
+        self.skip_ref_check.setToolTip(
+            "自动识别 References / Bibliography / 参考文献 章节，"
+            "该部分保持原文：不翻译、不重排，编号与超链接原样保留。\n"
+            "若参考文献之后还有附录（Appendix），附录仍会正常翻译。\n"
+            "注意：从参考文献标题所在的那一页开始整页保持原文。"
+        )
+        self.skip_ref_check.setChecked(self.cfg.get("skip_references", False))
+        r5.addWidget(self.skip_ref_check)
         r5.addStretch()
         cl.addLayout(r5)
 
@@ -3866,6 +3877,8 @@ class TranslatePage(QWidget):
         self.cfg["chunk_enabled"] = self.chunk_check.isChecked()
         self.cfg["chunk_size"] = self.chunk_size_spin.value()
         self.cfg["chunk_delay"] = self.chunk_delay_spin.value()
+        # v2.3.16
+        self.cfg["skip_references"] = self.skip_ref_check.isChecked()
         UserConfigManager.save(self.cfg)
 
     def _start(self):
@@ -3975,6 +3988,8 @@ class TranslatePage(QWidget):
             translate_tables=self.translate_tables_check.isChecked(),
             table_pages=self._get_table_pages(),
             ocr_mode=self.ocr_mode_check.isChecked(),
+            # v2.3.16: 跳过参考文献（保持原文，含编号/上标/超链接）
+            skip_references=self.skip_ref_check.isChecked(),
         )
         # v2.3.0: 传递 output_formats 到 worker（如果单文件模式被激活）
         # 由 _cli_format 属性（Zotero 唤起时设置）决定
@@ -4376,7 +4391,11 @@ class TranslatePage(QWidget):
         self.prog_icon.setText("❌")
         self.prog_label.setText("翻译出错")
         self.prog_pct.setText("!")
-        self.prog_detail.setText(msg)
+        # v2.3.16: 连接故障的中文排查指引是多行文本，塞进单行 QLabel 会看不全 →
+        # 进度区只放第一行摘要，完整内容另用对话框展示。
+        text = (msg or "").strip() or "未知错误"
+        lines = text.splitlines()
+        self.prog_detail.setText(lines[0])
         self.prog_bar.setValue(0)
         self.go_btn.setEnabled(True); self.go_btn.setText("重试翻译")
         self.stop_btn.setVisible(False)
@@ -4384,6 +4403,15 @@ class TranslatePage(QWidget):
             w = self.worker; self.worker = None
             w.quit()
             QTimer.singleShot(100, lambda: w.deleteLater() if not w.isRunning() else None)
+        if len(lines) > 1:
+            # 无人值守（Zotero/--auto）不能弹阻塞式对话框，改写日志保底
+            if getattr(self, "_cli_auto", False):
+                try:
+                    _dbg_write(f"translate_error(auto模式未弹窗): {text}")
+                except Exception:
+                    pass
+            else:
+                QMessageBox.warning(self, "翻译失败", text)
 
     # ── 骰子系统（静默、无文字、四叶草） ──
 
