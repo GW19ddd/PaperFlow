@@ -3,52 +3,8 @@
         "paperflow-connector@gw.com": {
             "updates": [
                 {
-                    "version": "1.0.19",
-                    "update_link": "https://github.com/AaronGIG/pdf2zh-desktop/releases/download/v2.3.7/pdf2zh-connector-v1.0.19.xpi",
-                    "applications": {
-                        "zotero": {
-                            "strict_min_version": "6.999",
-                            "strict_max_version": "9.*"
-                        }
-                    }
-                },
-                {
-                    "version": "1.0.28",
-                    "update_link": "https://github.com/AaronGIG/pdf2zh-desktop/releases/download/v2.3.17/pdf2zh-connector-v1.0.28.xpi",
-                    "applications": {
-                        "zotero": {
-                            "strict_min_version": "7.0",
-                            "strict_max_version": "9.*"
-                        }
-                    }
-                },
-                {
-                    "version": "1.0.30",
-                    "update_link": "https://github.com/AaronGIG/pdf2zh-desktop/releases/download/v2.3.17/pdf2zh-connector-v1.0.30.xpi",
-                    "applications": {
-                        "zotero": {
-                            "strict_min_version": "7.0",
-                            "strict_max_version": "9.*"
-                        }
-                    }
-                },
-                {
-                    "version": "1.0.31",
-                    "update_link": "https://github.com/AaronGIG/pdf2zh-desktop/releases/download/v2.3.17/pdf2zh-connector-v1.0.31.xpi",
-                    "applications": {
-                        "zotero": {
-                            "strict_min_version": "7.0",
-                            "strict_max_version": "9.*"
-                        }
-                    }
-                }
-            ]
-        },
-        "paperflow-connector@gw.com": {
-            "updates": [
-                {
                     "version": "1.0.0",
-                    "update_link": "https://github.com/AaronGIG/pdf2zh-desktop/releases/download/v2.3.17/paperflow-connector-v1.0.0.xpi",
+                    "update_link": "https://github.com/GW19ddd/PaperFlow/releases/download/v1.0.0/paperflow-connector-v1.0.0.xpi",
                     "applications": {
                         "zotero": {
                             "strict_min_version": "7.0",

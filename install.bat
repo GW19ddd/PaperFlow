@@ -6,7 +6,7 @@ setlocal enabledelayedexpansion
 title PaperFlow 翻译工具 - 安装配置
 
 echo ================================================================
-echo   PaperFlow 翻译工具 v2.3.19 - 安装配置脚本
+echo   PaperFlow 翻译工具 v1.0.0 - 安装配置脚本
 echo   PDF 翻译工作台（桌面版）
 echo ================================================================
 echo.

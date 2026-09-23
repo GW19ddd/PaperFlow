@@ -92,7 +92,7 @@ pip install pyinstaller
 
 ## 三、文件结构
 
-从仓库 `AaronGIG/pdf2zh-desktop` 的 `mac/` 目录获取源码：
+从仓库 `GW19ddd/PaperFlow` 的 `mac/` 目录获取源码：
 
 ```
 mac/
@@ -404,7 +404,7 @@ gh release create v2.2.0 paperflow-desktop-mac-v2.2.0.zip \
 
 ### 仓库结构
 ```
-AaronGIG/pdf2zh-desktop (共享仓库)
+GW19ddd/PaperFlow (共享仓库)
 ├── mac/          # Mac 端代码（本文档覆盖）
 ├── core/         # Win 端共享核心
 ├── config/       # Win 端配置

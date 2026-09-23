@@ -6,7 +6,7 @@ REM ==========================================================
 REM  PaperFlow 一键打包发布脚本
 REM  用法:
 REM    publish.bat              -> 同步代码 + 打包 + 上传到最新 tag 的 Release
-REM    publish.bat 2.3.20       -> 指定版本号（tag 须为 v2.3.20）
+REM    publish.bat 1.0.0       -> 指定版本号（tag 须为 v1.0.0）
 REM    publish.bat --local      -> 只同步 + 打包，不上传（本地验证用）
 REM  前置条件: 已安装 GitHub CLI (gh) 并登录
 REM ==========================================================
@@ -25,7 +25,7 @@ if /i "%VER%"=="--local" (
 if "%VER%"=="" (
     for /f %%v in ('git -C "%REPO%" describe --tags --abbrev=0 2^>nul') do set "VER=%%v"
 )
-if "%VER%"=="" set "VER=2.3.19"
+if "%VER%"=="" set "VER=1.0.0"
 set "VER=%VER:v=%"
 set "TAG=v%VER%"
 set "ZIP=%RELEASE_DIR%\paperflow-desktop-win-v%VER%.zip"

@@ -1,9 +1,9 @@
 {
   "app": {
     "name": "PaperFlow 桌面版",
-    "version": "2.2.4",
+    "version": "1.0.0",
     "build": "slim",
-    "author": "AaronGIG (gw)"
+    "author": "gw"
   },
   "runtime": {
     "python_version": "3.12",

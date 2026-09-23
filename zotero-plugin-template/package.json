@@ -12,13 +12,13 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/AaronGIG/pdf2zh-desktop.git"
+        "url": "git+https://github.com/GW19ddd/PaperFlow.git"
     },
     "author": "gw",
     "bugs": {
-        "url": "https://github.com/AaronGIG/pdf2zh-desktop/issues"
+        "url": "https://github.com/GW19ddd/PaperFlow/issues"
     },
-    "homepage": "https://github.com/AaronGIG/pdf2zh-desktop#readme",
+    "homepage": "https://github.com/GW19ddd/PaperFlow#readme",
     "license": "AGPL-3.0-or-later",
     "scripts": {
         "start": "zotero-plugin serve",

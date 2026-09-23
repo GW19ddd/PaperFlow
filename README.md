@@ -144,8 +144,8 @@
 
 | 平台 | 下载 | 大小 | 启动方式 |
 |------|------|------|---------|
-| 🪟 Windows | [`PaperFlow-win-v1.0.0.zip`](https://github.com/GW19ddd/PaperFlow/releases/download/v1.0.0/PaperFlow-win-v1.0.0.zip) | ~290MB | 解压 → 双击 `paperflow.exe` |
-| 🍎 macOS | [`PaperFlow-mac-v1.0.0.zip`](https://github.com/GW19ddd/PaperFlow/releases/download/v1.0.0/PaperFlow-mac-v1.0.0.zip) | ~228MB | 解压 → 双击 `paperflow.app` |
+| 🪟 Windows | [`paperflow-desktop-win-v1.0.0.zip`](https://github.com/GW19ddd/PaperFlow/releases/download/v1.0.0/paperflow-desktop-win-v1.0.0.zip) | ~290MB | 解压 → 双击 `paperflow.exe` |
+| 🍎 macOS | [`paperflow-desktop-mac-v1.0.0.zip`](https://github.com/GW19ddd/PaperFlow/releases/download/v1.0.0/paperflow-desktop-mac-v1.0.0.zip) | ~228MB | 解压 → 双击 `paperflow.app` |
 
 ### 🖱️ 第二步：启动
 

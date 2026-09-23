@@ -198,8 +198,7 @@ function _findPaperFlowExecutable() {
 
     // ===== Windows =====
     var exe = 'paperflow.exe';
-    var folderNames = ['paperflow-desktop-win', 'paperflow-desktop-win-v2.3.3', 'paperflow-desktop-win-v2.3.2',
-                       'paperflow-desktop-win-v2.3.1', 'paperflow'];
+    var folderNames = ['paperflow-desktop-win', 'paperflow-desktop-win-v1.0.0', 'paperflow'];
     // 1) 固定候选: <base>\<folderName>\paperflow.exe  和  <base>\paperflow.exe
     var bases = [
         'C:\\', 'C:\\Program Files', 'C:\\Program Files (x86)',
@@ -268,7 +267,7 @@ async function _launchPaperFlow(filePath, format, auto) {
                 'Windows: 请确认已把 paperflow-desktop-win 文件夹解压出来(里面有 paperflow.exe)。\n' +
                 'Mac: 确认 paperflow.app 在“应用程序”里。\n\n' +
                 '点“确定”手动选择 ' + (Zotero.isWin ? 'paperflow.exe' : 'paperflow.app') + ' 的位置(只需选一次)；\n' +
-                '点“取消”去下载：github.com/AaronGIG/pdf2zh-desktop/releases');
+                '点“取消”去下载：github.com/GW19ddd/PaperFlow/releases');
             if (yes) {
                 var fp = Components.classes['@mozilla.org/filepicker;1'].createInstance(Components.interfaces.nsIFilePicker);
                 fp.init(win, '选择 paperflow 程序', fp.modeOpen);
@@ -287,7 +286,7 @@ async function _launchPaperFlow(filePath, format, auto) {
                 '未找到 paperflow-desktop 应用。\n' +
                 'Windows: 把下载的 zip 解压, 确认有 paperflow-desktop-win\\paperflow.exe；建议解压到“下载”或“桌面”。\n' +
                 'Mac: 把 paperflow.app 放进“应用程序”。\n\n' +
-                '下载：https://github.com/AaronGIG/pdf2zh-desktop/releases');
+                '下载：https://github.com/GW19ddd/PaperFlow/releases');
             return;
         }
     }

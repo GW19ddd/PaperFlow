@@ -148,8 +148,8 @@ app = BUNDLE(
     info_plist={
         'CFBundleName': 'PaperFlow',
         'CFBundleDisplayName': 'PaperFlow',
-        'CFBundleVersion': '2.3.16',
-        'CFBundleShortVersionString': '2.3.16',
+        'CFBundleVersion': '1.0.0',
+        'CFBundleShortVersionString': '1.0.0',
         'LSMinimumSystemVersion': '13.0',
         'NSHighResolutionCapable': True,
         'LSApplicationCategoryType': 'public.app-category.productivity',

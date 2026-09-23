@@ -1,8 +1,8 @@
 # ==========================================================
-# pdf2zh-desktop 增量发布工作流
+# PaperFlow 增量发布工作流
 #
 # 触发方式：
-#   1) 打 tag 自动触发:  git tag v2.3.20 && git push origin v2.3.20
+#   1) 打 tag 自动触发:  git tag v1.0.0 && git push origin v1.0.0
 #   2) 手动触发:         Actions 页面 → Run workflow → 填版本号（可留空）
 #
 # 原理（增量发布）：
@@ -23,7 +23,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: '版本号，如 2.3.20（留空则用最新 release tag）'
+        description: '版本号，如 1.0.0（留空则用最新 release tag）'
         required: false
         default: ''
 

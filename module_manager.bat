@@ -10,8 +10,8 @@ echo ================================================================
 echo.
 
 :: 设置变量
-set "BASE_URL=https://github.com/your-username/pdf2zh-desktop/releases/download"
-set "VERSION=v2.3.9"
+set "BASE_URL=https://github.com/GW19ddd/PaperFlow/releases/download"
+set "VERSION=v1.0.0"
 set "CONFIG_FILE=config\modules.json"
 
 :: 检查配置文件

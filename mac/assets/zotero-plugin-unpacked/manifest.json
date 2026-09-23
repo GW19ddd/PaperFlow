@@ -1,13 +1,13 @@
 {
     "manifest_version": 2,
     "name": "PaperFlow Connector for Zotero",
-    "version": "1.0.18",
+    "version": "1.0.0",
     "description": "Enables paperflow-desktop app to add translated PDFs as Zotero attachments + right-click translate menu. (Not the original pdf2zh)",
-    "author": "AaronGIG",
+    "author": "gw",
     "applications": {
         "zotero": {
             "id": "paperflow-connector@gw.com",
-            "update_url": "https://raw.githubusercontent.com/Byaidu/PDFMathTranslate/main/updates.json",
+            "update_url": "https://raw.githubusercontent.com/GW19ddd/PaperFlow/main/updates.json",
             "strict_min_version": "6.999",
             "strict_max_version": "9.*"
         }

@@ -586,7 +586,7 @@ class TranslateWorker(QThread):
                     pass
 
             # ══════════════════════════════════════════
-            #  分块翻译（和原版 AaronGIG 逻辑一致）
+            #  分块翻译（和原版实现逻辑一致）
             #  条件：开启分块 AND 翻译全部页面（无自定义页码）
             # ══════════════════════════════════════════
             if self.chunk_enabled and self.pages is None:

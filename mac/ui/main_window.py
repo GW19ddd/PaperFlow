@@ -4942,13 +4942,13 @@ class AboutPage(QWidget):
         tn = QPushButton("PaperFlow"); tn.setObjectName("SBLink")
         tn.setStyleSheet("font-size:18px;font-weight:700;padding:0;text-align:left;")
         tn.setCursor(Qt.PointingHandCursor); tn.setFlat(True)
-        tn.clicked.connect(lambda: webbrowser.open("https://github.com/AaronGIG/pdf2zh-desktop"))
+        tn.clicked.connect(lambda: webbrowser.open("https://github.com/GW19ddd/PaperFlow"))
         top.addWidget(tn)
         tv = QLabel("v2.2.0"); tv.setObjectName("Cap"); top.addWidget(tv)
         tt = QLabel("macOS"); tt.setObjectName("Tag"); tt.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Fixed); top.addWidget(tt)
         top.addStretch()
         gb = QPushButton("GitHub ↗"); gb.setObjectName("Gh"); gb.setCursor(Qt.PointingHandCursor)
-        gb.clicked.connect(lambda: webbrowser.open("https://github.com/AaronGIG/pdf2zh-desktop"))
+        gb.clicked.connect(lambda: webbrowser.open("https://github.com/GW19ddd/PaperFlow"))
         top.addWidget(gb)
         lo.addLayout(top)
 
@@ -5015,7 +5015,7 @@ class AboutPage(QWidget):
         # 联系作者
         cc = _card(); ccl = QVBoxLayout(cc); ccl.setContentsMargins(16,12,16,12); ccl.setSpacing(6)
         ct = QLabel("联系作者 ♡"); ct.setStyleSheet("font-size:11px;font-weight:600;"); ccl.addWidget(ct)
-        contact_info = QLabel("QQ: 2994574297@qq.com\nGitHub: github.com/AaronGIG/pdf2zh-desktop")
+        contact_info = QLabel("QQ: 2994574297@qq.com\nGitHub: github.com/GW19ddd/PaperFlow")
         contact_info.setObjectName("Cap"); contact_info.setAlignment(Qt.AlignCenter)
         contact_info.setStyleSheet("font-size:11px;line-height:1.6;")
         contact_info.setTextInteractionFlags(Qt.TextSelectableByMouse)
@@ -5246,7 +5246,7 @@ class MainWindow(QMainWindow):
         logo_name = QPushButton("PaperFlow"); logo_name.setObjectName("SBLink")
         logo_name.setStyleSheet("font-size:15px;font-weight:700;letter-spacing:-0.2px;padding:0;text-align:left;")
         logo_name.setCursor(Qt.PointingHandCursor); logo_name.setFlat(True)
-        logo_name.clicked.connect(lambda: webbrowser.open("https://github.com/AaronGIG/pdf2zh-desktop"))
+        logo_name.clicked.connect(lambda: webbrowser.open("https://github.com/GW19ddd/PaperFlow"))
         logo_sub = QLabel("macOS Edition"); logo_sub.setObjectName("Cap")
         logo_text.addWidget(logo_name); logo_text.addWidget(logo_sub)
         logo_row.addLayout(logo_text); logo_row.addStretch()
@@ -5268,9 +5268,9 @@ class MainWindow(QMainWindow):
         link_row = QHBoxLayout(); link_row.setSpacing(0)
         link_row.setContentsMargins(8,0,8,4); link_row.addStretch()
         for text, url in [
-            ("GitHub", "https://github.com/AaronGIG/pdf2zh-desktop"),
-            ("Feedback", "https://github.com/AaronGIG/pdf2zh-desktop/issues"),
-            ("Star ⭐", "https://github.com/AaronGIG/pdf2zh-desktop"),
+            ("GitHub", "https://github.com/GW19ddd/PaperFlow"),
+            ("Feedback", "https://github.com/GW19ddd/PaperFlow/issues"),
+            ("Star ⭐", "https://github.com/GW19ddd/PaperFlow"),
         ]:
             lb = QPushButton(text); lb.setObjectName("SBLink"); lb.setCursor(Qt.PointingHandCursor)
             lb.clicked.connect(lambda _, u=url: webbrowser.open(u))

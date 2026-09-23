@@ -56,9 +56,9 @@
     "advanced_features": ["core", "models"]
   },
   "download_sources": {
-    "primary": "https://github.com/your-username/pdf2zh-desktop/releases",
-    "mirror": "https://gitee.com/your-username/pdf2zh-desktop/releases",
-    "cdn": "https://cdn.example.com/pdf2zh-desktop"
+    "primary": "https://github.com/GW19ddd/PaperFlow/releases",
+    "mirror": "https://gitee.com/GW19ddd/PaperFlow/releases",
+    "cdn": "https://cdn.example.com/PaperFlow"
   },
   "update_policy": {
     "check_interval": "24h",
