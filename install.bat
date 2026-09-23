@@ -122,8 +122,8 @@ echo   3. 翻译完成后自动保存到 paperflow_files 目录
 echo   4. 支持 Zotero 联动翻译，可在设置页启用
 echo.
 echo 项目地址:
-echo   - 主页: https://github.com/GW19ddd/pdf2zh-desktop
-echo   - 反馈: https://github.com/GW19ddd/pdf2zh-desktop/issues
+echo   - 主页: https://github.com/GW19ddd/PaperFlow
+echo   - 反馈: https://github.com/GW19ddd/PaperFlow/issues
 echo.
 
 choice /c YN /m "是否立即启动 PaperFlow 翻译工具?"

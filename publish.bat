@@ -77,6 +77,6 @@ echo [3/4] 上传到 GitHub Release %TAG%...
 gh release upload %TAG% "%ZIP%" --clobber
 if errorlevel 1 (echo [错误] 上传失败，请检查 Release %TAG% 是否存在 && pause && exit /b 1)
 echo [4/4] 全部完成!
-echo         在线地址: https://github.com/GW19ddd/pdf2zh-desktop/releases/tag/%TAG%
+echo         在线地址: https://github.com/GW19ddd/PaperFlow/releases/tag/%TAG%
 pause
 exit /b 0

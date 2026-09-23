@@ -65,13 +65,13 @@ Tired of wrestling with Python environments just to translate a paper? Done with
 
 ## 🚀 Three Steps to Get Started
 
-1. 📥 **[Download the latest Release](https://github.com/GW19ddd/pdf2zh-desktop/releases/latest)** (zip file, ready to use)
+1. 📥 **[Download the latest Release](https://github.com/GW19ddd/PaperFlow/releases/latest)** (zip file, ready to use)
 2. 🖱️ **Double-click `paperflow.bat`** to launch
 3. 📄 **Drop in a PDF** → pick a translation service → hit "Start Translation" → done! 🎉
 
 > 💡 **Tip**: Google / Bing translation is free and requires zero configuration — just open and go!
 >
-> ⚠️ Download the zip from the [Releases page](https://github.com/GW19ddd/pdf2zh-desktop/releases/latest). Do **NOT** click "Source code" — it won't work out of the box.
+> ⚠️ Download the zip from the [Releases page](https://github.com/GW19ddd/PaperFlow/releases/latest). Do **NOT** click "Source code" — it won't work out of the box.
 
 ---
 

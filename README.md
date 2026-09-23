@@ -18,7 +18,7 @@
 [![Windows](https://img.shields.io/badge/Windows-10/11-0078D6?style=flat-square&logo=windows&logoColor=white)](https://github.com/AaronGIG/pdf2zh-desktop/releases)
 [![macOS](https://img.shields.io/badge/macOS-13.0+-000000?style=flat-square&logo=apple&logoColor=white)](https://github.com/AaronGIG/pdf2zh-desktop/releases)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
-[![Version](https://img.shields.io/badge/Version-2.3.19-blue?style=flat-square)](https://github.com/GW19ddd/pdf2zh-desktop/releases)
+[![Version](https://img.shields.io/badge/Version-2.3.19-blue?style=flat-square)](https://github.com/GW19ddd/PaperFlow/releases)
 
 <br>
 
@@ -154,7 +154,7 @@
 
 | 平台 | 下载 | 大小 | 启动方式 |
 |------|------|------|---------|
-| 🪟 Windows | [`pdf2zh-desktop-win-v2.3.19.zip`](https://github.com/GW19ddd/pdf2zh-desktop/releases/download/v2.3.19/pdf2zh-desktop-win-v2.3.19.zip) | ~290MB | 解压 → 双击 `paperflow.exe` |
+| 🪟 Windows | [`pdf2zh-desktop-win-v2.3.19.zip`](https://github.com/GW19ddd/PaperFlow/releases/download/v2.3.19/pdf2zh-desktop-win-v2.3.19.zip) | ~290MB | 解压 → 双击 `paperflow.exe` |
 | 🍎 macOS | [`pdf2zh-desktop-mac-v2.3.17.zip`](https://github.com/AaronGIG/pdf2zh-desktop/releases/download/v2.3.17/pdf2zh-desktop-mac-v2.3.17.zip) | ~228MB | 解压 → 双击 `paperflow.app` |
 
 ### 🖱️ 第二步：启动
@@ -174,7 +174,7 @@
 
 > 💡 **小贴士**：Google / Bing 翻译免费无需配置，打开就能用！
 >
-> ⚠️ 请从 [Releases 页面](https://github.com/GW19ddd/pdf2zh-desktop/releases/latest) 下载，**不要**点 Source code。
+> ⚠️ 请从 [Releases 页面](https://github.com/GW19ddd/PaperFlow/releases/latest) 下载，**不要**点 Source code。
 
 ---
 
