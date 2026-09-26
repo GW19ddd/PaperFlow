@@ -82,12 +82,13 @@ Translate PDFs directly from Zotero — the translated PDF is automatically adde
 - **One-click plugin install**: Settings → Zotero → "Install Zotero plugin" (Windows / macOS), then restart Zotero
 - **Right-click translate**: right-click a PDF attachment in the item tree or inside the PDF reader → "📖 用 PaperFlow 翻译" (Translate with paperflow-desktop)
 - **Formats**: side-by-side / dual / mono / all three — selectable right from the context menu
-- **Linked attachments**: if the original PDF lives outside Zotero storage (moved by zotmoov / attanger), the translation is placed next to it and linked back to the item (plugin v1.0.30+)
+- **Linked attachments**: if the original PDF lives outside Zotero storage (moved by zotmoov / attanger), the translation is placed next to it and linked back to the item (plugin v1.0.0+)
 - **Plugin settings panel**: Zotero → Settings → paperflow 翻译 — default format, silent translation, auto-locate item, app path
 - **Silent mode**: translate in the background without stealing focus; the window closes itself when done
 
 > The plugin only needs to be installed once. Users without Zotero are completely unaffected.
-> Compatible with Zotero 7 / 8 / 9; auto-updates via updates.json.
+> Compatible with Zotero 7 / 8 / 9 / 10; auto-updates via updates.json.
+> Plugin download: [`paperflow-connector-v1.0.0.xpi`](https://github.com/GW19ddd/PaperFlow/releases/download/v1.0.0/paperflow-connector-v1.0.0.xpi)
 
 ## 🌍 20+ Translation Services — Pick Your Favorite
 

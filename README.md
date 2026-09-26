@@ -144,8 +144,11 @@
 
 | 平台 | 下载 | 大小 | 启动方式 |
 |------|------|------|---------|
-| 🪟 Windows | [`paperflow-desktop-win-v1.0.0.zip`](https://github.com/GW19ddd/PaperFlow/releases/download/v1.0.0/paperflow-desktop-win-v1.0.0.zip) | ~290MB | 解压 → 双击 `paperflow.exe` |
-| 🍎 macOS | [`paperflow-desktop-mac-v1.0.0.zip`](https://github.com/GW19ddd/PaperFlow/releases/download/v1.0.0/paperflow-desktop-mac-v1.0.0.zip) | ~228MB | 解压 → 双击 `paperflow.app` |
+| 🪟 Windows | [Releases → `paperflow-desktop-win-v1.0.0.zip`](https://github.com/GW19ddd/PaperFlow/releases/latest) | ~290MB | 解压 → 双击 `paperflow.exe` |
+| 🍎 macOS | [Releases → `paperflow-desktop-mac-v1.0.0.zip`](https://github.com/GW19ddd/PaperFlow/releases/latest) | ~228MB | 解压 → 双击 `paperflow.app` |
+
+> 📦 完整包在 [Releases 页面](https://github.com/GW19ddd/PaperFlow/releases/latest) 的 **Assets** 里下载。
+> 🔌 同时提供 [`paperflow-connector-v1.0.0.xpi`](https://github.com/GW19ddd/PaperFlow/releases/download/v1.0.0/paperflow-connector-v1.0.0.xpi)（Zotero 插件，装了才能在 Zotero 里右键翻译）。
 
 ### 🖱️ 第二步：启动
 
@@ -216,7 +219,7 @@
 - 默认翻译格式：中外并排 / 上下双语 / 纯中文 / 全部 3 种
 - 静默翻译开关、翻译完成后在 Zotero 中定位该文献
 - PaperFlow 程序路径：自动探测 / 手动浏览（找不到应用时会弹窗引导手动选择一次，之后记住）
-- 插件版本 v1.0.0（PaperFlow Connector for Zotero），兼容 Zotero 7 / 8 / 9，支持自动更新（updates.json）
+- 插件版本 v1.0.0（PaperFlow Connector for Zotero），兼容 Zotero 7 / 8 / 9 / 10，支持自动更新（updates.json）
 
 ---
 
@@ -275,7 +278,7 @@
 | 怎么用 DeepSeek？ | 选 DeepSeek → 填 API Key → 选模型 |
 | 怎么用自己的 API？ | 选「OpenAI 兼容格式」→ 快捷预设一键配置 |
 | 怎么保证术语准确？ | 展开「术语库」→ 选学科模板或自定义 |
-| Zotero 翻译后没显示附件？ | 设置页点「一键安装插件」或从 Releases 下载最新 PaperFlow Connector xpi（v1.0.0） |
+| Zotero 翻译后没显示附件？ | 设置页点「一键安装插件」，或直接下载 [`paperflow-connector-v1.0.0.xpi`](https://github.com/GW19ddd/PaperFlow/releases/download/v1.0.0/paperflow-connector-v1.0.0.xpi) 手动安装 |
 
 ---
 
