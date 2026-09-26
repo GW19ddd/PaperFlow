@@ -44,6 +44,8 @@ robocopy "%REPO%ui" "%TARGET%ui" /E /XD __pycache__ /NFL /NDL /NJH /NJS
 if %errorlevel% GEQ 8 (echo [错误] 同步 ui 代码失败 && pause && exit /b 1)
 robocopy "%REPO%core\site-packages\pdf2zh" "%TARGET%core\site-packages\pdf2zh" /E /XD __pycache__ /NFL /NDL /NJH /NJS
 if %errorlevel% GEQ 8 (echo [错误] 同步 pdf2zh 代码失败 && pause && exit /b 1)
+robocopy "%REPO%assets" "%TARGET%assets" /E /NFL /NDL /NJH /NJS
+if %errorlevel% GEQ 8 (echo [错误] 同步 assets 失败 && pause && exit /b 1)
 copy /Y "%REPO%_launcher.py" "%TARGET%_launcher.py" >nul
 copy /Y "%REPO%install.bat" "%TARGET%install.bat" >nul
 copy /Y "%REPO%paperflow.bat" "%TARGET%paperflow.bat" >nul
