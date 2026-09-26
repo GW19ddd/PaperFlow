@@ -38,8 +38,33 @@ function fileExistsPath(p: string): string | null {
   }
 }
 
-/** 在某目录下浅层扫描 paperflow.exe：遍历每个子目录，查子目录内是否有可执行文件。限制数量避免全盘慢扫。 */
-function scanDirForExe(dir: string, exeName: string): string | null {
+/** 系统目录 / 条目爆炸的目录，扫描时直接跳过（. 开头与 node_modules 也一样） */
+const SKIP_DIRS = new Set([
+  "windows",
+  "$recycle.bin",
+  "system volume information",
+  "programdata",
+  "recovery",
+  "perflogs",
+  "appdata",
+  "program files",
+  "program files (x86)",
+  "$windows.~ws",
+  "windows.old",
+  "node_modules",
+]);
+
+function skipDir(name: string): boolean {
+  const n = (name || "").toLowerCase();
+  return n.length === 0 || n.startsWith(".") || SKIP_DIRS.has(n);
+}
+
+/**
+ * 在 dir 下扫描 paperflow.exe，默认下钻 2 层。
+ * 只扫一层时，解压在 D:\03-Codes\pdf2zh-desktop\ 这种「两级目录」里的程序永远找不到，
+ * 只能靠用户手动指定；下钻两层后开箱即用。每层限制条目数，避免全盘慢扫。
+ */
+function scanDirForExe(dir: string, exeName: string, depth = 2): string | null {
   try {
     const d = Zotero.File.pathToFile(dir);
     if (!d || !d.exists() || !d.isDirectory()) return null;
@@ -47,18 +72,10 @@ function scanDirForExe(dir: string, exeName: string): string | null {
     if (direct) return direct;
     const winRoot = fileExistsPath(pathJoin(pathJoin(dir, "paperflow-desktop-win"), exeName));
     if (winRoot) return winRoot;
-    const skip = new Set([
-      "windows",
-      "$recycle.bin",
-      "system volume information",
-      "programdata",
-      "recovery",
-      "perflogs",
-      "appdata",
-    ]);
     const entries = (d as any).directoryEntries;
+    const limit = depth > 1 ? 120 : 30;
     let count = 0;
-    while (entries.hasMoreElements() && count < 120) {
+    while (entries.hasMoreElements() && count < limit) {
       let sub: any;
       try {
         sub = entries.getNext().QueryInterface(Components.interfaces.nsIFile);
@@ -67,12 +84,15 @@ function scanDirForExe(dir: string, exeName: string): string | null {
       }
       if (!sub.isDirectory()) continue;
       count++;
-      const name = (sub.leafName || "").toLowerCase();
-      if (skip.has(name)) continue;
+      if (skipDir(sub.leafName || "")) continue;
       const hit = fileExistsPath(pathJoin(sub.path, exeName));
       if (hit) return hit;
       const hit2 = fileExistsPath(pathJoin(pathJoin(sub.path, "paperflow-desktop-win"), exeName));
       if (hit2) return hit2;
+      if (depth > 1) {
+        const deeper = scanDirForExe(sub.path, exeName, depth - 1);
+        if (deeper) return deeper;
+      }
     }
   } catch (e) {
     /* ignore */
