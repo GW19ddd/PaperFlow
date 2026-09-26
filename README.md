@@ -144,10 +144,10 @@
 
 | 平台 | 下载 | 大小 | 启动方式 |
 |------|------|------|---------|
-| 🪟 Windows | [Releases → `paperflow-desktop-win-v1.0.0.zip`](https://github.com/GW19ddd/PaperFlow/releases/latest) | ~290MB | 解压 → 双击 `paperflow.exe` |
-| 🍎 macOS | [Releases → `paperflow-desktop-mac-v1.0.0.zip`](https://github.com/GW19ddd/PaperFlow/releases/latest) | ~228MB | 解压 → 双击 `paperflow.app` |
+| 🪟 Windows | [`paperflow-desktop-win-v1.0.0.zip`](https://github.com/GW19ddd/PaperFlow/releases/download/v1.0.0/paperflow-desktop-win-v1.0.0.zip) | ~373MB | 解压 → 双击 `paperflow.exe` |
+| 🍎 macOS | [Releases 页面 → `paperflow-desktop-mac-v1.0.0.zip`](https://github.com/GW19ddd/PaperFlow/releases/latest) | ~228MB | 解压 → 双击 `paperflow.app` |
 
-> 📦 完整包在 [Releases 页面](https://github.com/GW19ddd/PaperFlow/releases/latest) 的 **Assets** 里下载。
+> 🍎 macOS 包尚未随 v1.0.0 发布，上传后会同步出现在 [Releases 页面](https://github.com/GW19ddd/PaperFlow/releases/latest)。
 > 🔌 同时提供 [`paperflow-connector-v1.0.0.xpi`](https://github.com/GW19ddd/PaperFlow/releases/download/v1.0.0/paperflow-connector-v1.0.0.xpi)（Zotero 插件，装了才能在 Zotero 里右键翻译）。
 
 ### 🖱️ 第二步：启动
