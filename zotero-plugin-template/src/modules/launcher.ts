@@ -245,12 +245,31 @@ function promptPickExecutable(): Promise<string | null> {
     })();
   });
 }
+export interface PaperFlowBatchFile extends PaperFlowLaunchInfo {
+  path: string;
+}
+
+/** 单文件入口（PDF reader 菜单等旧调用方），保留原签名 */
 export async function launchPaperFlow(
   filePath: string,
   format: string | null,
   auto: boolean,
   info?: PaperFlowLaunchInfo
 ): Promise<void> {
+  await launchPaperFlowBatch([{ path: filePath, ...(info || {}) }], format, auto);
+}
+
+/**
+ * 批量入口：一次启动 PaperFlow，把所有选中 PDF 连同各自的 Zotero 附件 key 传过去。
+ * 参数顺序很关键 —— 桌面端 _launcher.py 顺序解析：遇到 .pdf 就把紧挨在前面的
+ * --zotero-key / --zotero-link-mode 绑定到该文件，多个附件的 key 才不会串位。
+ */
+export async function launchPaperFlowBatch(
+  files: PaperFlowBatchFile[],
+  format: string | null,
+  auto: boolean
+): Promise<void> {
+  if (!files.length) return;
   let exe = findPaperFlowExecutable();
   if (!exe) {
     exe = await promptPickExecutable();
@@ -262,12 +281,12 @@ export async function launchPaperFlow(
   if (auto) args.push("--auto");
   // 后台静默模式（右键菜单 / 设置面板里开启）
   if (prefGet("silent", false) === true) args.push("--silent");
-  // 传 Zotero 附件元数据，解决 zotmoov 等插件移动过的链接附件无法回写的问题
-  if (info) {
-    if (info.key) args.push("--zotero-key=" + info.key);
-    if (typeof info.linkMode === "number") args.push("--zotero-link-mode=" + info.linkMode);
+  for (const f of files) {
+    // 传 Zotero 附件元数据，解决 zotmoov 等插件移动过的链接附件无法回写的问题
+    if (f.key) args.push("--zotero-key=" + f.key);
+    if (typeof f.linkMode === "number") args.push("--zotero-link-mode=" + f.linkMode);
+    args.push(f.path);
   }
-  args.push(filePath);
 
   let command: string;
   let allArgs: string[];

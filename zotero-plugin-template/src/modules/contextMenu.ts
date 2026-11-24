@@ -1,7 +1,7 @@
 import { getString } from "../utils/locale";
 import { prefGet, prefSet } from "../utils/prefs";
 import { debugLog, debugLogPath } from "../utils/debug";
-import { launchPaperFlow, PaperFlowLaunchInfo } from "./launcher";
+import { launchPaperFlow, launchPaperFlowBatch, PaperFlowLaunchInfo } from "./launcher";
 
 /**
  * 右键菜单：
@@ -82,14 +82,14 @@ export async function triggerTranslate(
     if (infos.length === 0) {
       alertUser(
         "PaperFlow Connector",
-        "请先选中一个 PDF 附件或含 PDF 的文献条目\n(paperflow-desktop Connector)"
+        "请先选中 PDF 附件或含 PDF 的文献条目（支持多选）\n(paperflow-desktop Connector)"
       );
       return;
     }
-    for (const info of infos) {
-      await launchPaperFlow(info.path, format, auto, info);
-    }
-    debugLog("=== triggerTranslate DONE ===");
+    // 多选条目 → 一次性把所有 PDF 及其附件 key 传给桌面端，由 App 批量翻译、
+    // 逐个回写；不再为每个 PDF 起一个进程（那样元数据会串位、还会反复抢占单实例）。
+    await launchPaperFlowBatch(infos, format, auto);
+    debugLog("=== triggerTranslate DONE count=" + infos.length + " ===");
   } catch (e: any) {
     debugLog(
       "triggerTranslate EXCEPTION: " + e + " stack=" + (e && e.stack ? e.stack : "no-stack")

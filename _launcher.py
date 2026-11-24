@@ -111,13 +111,18 @@ def ensure_window_visible(window, app):
 
 
 def _parse_cli_args(argv):
-    """v2.3.4: 解析 Zotero 右键唤起的命令行参数
+    """解析 Zotero 右键唤起的命令行参数（v1.0.1 起支持多选批量）
     支持: paperflow.exe [--format=side_by_side|dual|mono|all] [--auto] [--silent]
-                    [--zotero-key=XXXXXXXX] [--zotero-link-mode=0|1|2|3] <file.pdf>
-    --zotero-key / --zotero-link-mode: v1.0.20 起由插件传入, 用于对 zotmoov 等移动过的链接附件做 Zotero 回写
+                    [--zotero-key=K1] [--zotero-link-mode=0|1|2|3] <file1.pdf>
+                    [--zotero-key=K2] [--zotero-link-mode=...] <file2.pdf> ...
+    --zotero-key / --zotero-link-mode 必须紧跟在对应 PDF 之前；顺序解析，保证
+    多选附件时每个 PDF 绑定自己的 key，不会串位。
+    保留 file/zotero_key 顶层标量，兼容旧版单文件调用。
     """
-    result = {"file": None, "format": None, "auto": False, "silent": False,
+    result = {"file": None, "files": [], "format": None, "auto": False, "silent": False,
               "zotero_key": None, "zotero_link_mode": None}
+    pending_key = None
+    pending_mode = None
     try:
         for arg in argv[1:]:
             if arg.startswith("--format="):
@@ -129,12 +134,23 @@ def _parse_cli_args(argv):
             elif arg == "--silent":
                 result["silent"] = True
             elif arg.startswith("--zotero-key="):
-                result["zotero_key"] = arg.split("=", 1)[1].strip()
+                pending_key = arg.split("=", 1)[1].strip()
+                result["zotero_key"] = pending_key
             elif arg.startswith("--zotero-link-mode="):
                 mode = arg.split("=", 1)[1].strip()
-                result["zotero_link_mode"] = int(mode) if mode.isdigit() else None
+                pending_mode = int(mode) if mode.isdigit() else None
+                result["zotero_link_mode"] = pending_mode
             elif arg.lower().endswith(".pdf") and os.path.isfile(arg):
-                result["file"] = arg
+                entry = {"file": arg}
+                if pending_key:
+                    entry["zotero_key"] = pending_key
+                if pending_mode is not None:
+                    entry["zotero_link_mode"] = pending_mode
+                result["files"].append(entry)
+                if result["file"] is None:
+                    result["file"] = arg
+                pending_key = None
+                pending_mode = None
     except Exception:
         pass
     return result
@@ -183,7 +199,7 @@ def main():
         if _socket.waitForConnected(500):
             # 已有实例：把文件+参数发过去让它翻译，本进程退出
             log("检测到已有实例，转发参数后退出")
-            if _cli.get("file"):
+            if _cli.get("files") or _cli.get("file"):
                 try:
                     _socket.write(_json.dumps(_cli).encode("utf-8"))
                     _socket.waitForBytesWritten(1000)
@@ -333,27 +349,51 @@ def main():
         def _handle_cli(payload):
             try:
                 log(f"[cli] _handle_cli payload={payload}")
-                file_path = payload.get("file")
-                if not file_path or not os.path.isfile(file_path):
-                    log(f"[cli] file invalid: {file_path}")
-                    return
-                if hasattr(window, "batch_files"):
-                    if file_path not in window.batch_files:
+                # v1.0.1: 多选批量 —— 一个 payload 带多个 PDF，每个有自己的附件 key。
+                # 老插件仍只传单文件 + 顶层 key，这里自动包成一条兼容。
+                entries = payload.get("files")
+                if not entries:
+                    one = {"file": payload.get("file")}
+                    if payload.get("zotero_key"):
+                        one["zotero_key"] = payload["zotero_key"]
+                    if payload.get("zotero_link_mode") is not None:
+                        one["zotero_link_mode"] = payload["zotero_link_mode"]
+                    entries = [one]
+                meta = getattr(window, "_cli_zotero_meta", None)
+                if meta is None:
+                    meta = {}
+                    window._cli_zotero_meta = meta
+                added = []
+                for entry in entries:
+                    file_path = entry.get("file")
+                    if not file_path or not os.path.isfile(file_path):
+                        log(f"[cli] file invalid: {file_path}")
+                        continue
+                    added.append(file_path)
+                    if hasattr(window, "batch_files") and file_path not in window.batch_files:
                         window.batch_files.append(file_path)
+                        if hasattr(window, "file_list_widget"):
+                            try:
+                                window.file_list_widget.addItem(os.path.basename(file_path))
+                            except Exception:
+                                pass
                     if hasattr(window, "current_file") and not window.current_file:
                         window.current_file = file_path
-                    if hasattr(window, "file_list_widget"):
-                        try:
-                            window.file_list_widget.addItem(os.path.basename(file_path))
-                        except Exception:
-                            pass
+                    # 按文件路径存各自的 key —— 批量回写时按文件取，不再串位
+                    key = entry.get("zotero_key")
+                    if key:
+                        meta[os.path.normcase(os.path.abspath(file_path))] = {
+                            "key": key,
+                            "link_mode": entry.get("zotero_link_mode"),
+                        }
+                        if not getattr(window, "_cli_zotero_key", None):
+                            window._cli_zotero_key = key  # 旧版单 key 路径兜底
+                if not added:
+                    return
+                log(f"[cli] added {len(added)} file(s)")
                 fmt = payload.get("format")
                 if fmt:
                     window._cli_output_format = fmt
-                # v1.0.20: Zotero 附件元数据(链接附件回写用)
-                zkey = payload.get("zotero_key")
-                if zkey:
-                    window._cli_zotero_key = zkey
                 if payload.get("zotero_link_mode") is not None:
                     window._cli_zotero_link_mode = payload["zotero_link_mode"]
                 # v2.3.4: 后台静默模式 —— 最小化窗口不抢焦点, 完成后自动关闭

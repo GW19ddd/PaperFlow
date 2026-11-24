@@ -9,7 +9,7 @@ export default {
   name: pkg.config.addonName,
   id: pkg.config.addonID,
   namespace: pkg.config.addonRef,
-  xpiName: "paperflow-connector-v1.0.0",
+  xpiName: "paperflow-connector-v1.0.1",
   updateURL: "https://raw.githubusercontent.com/GW19ddd/PaperFlow/main/updates.json",
   xpiDownloadLink:
     "https://github.com/GW19ddd/PaperFlow/releases/download/v{{version}}/{{xpiName}}.xpi",
