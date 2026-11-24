@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dialog
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  id="paperflow-pdf-select"
+  title="选择要翻译的 PDF"
+  width="640"
+  height="460"
+  persist="width height screenX screenY"
+  buttons="accept,cancel"
+  onload="PaperFlowPdfSelect.init()"
+  ondialogaccept="return PaperFlowPdfSelect.accept()"
+>
+  <script type="application/javascript"><![CDATA[
+    var PaperFlowPdfSelect = {
+      init: function () {
+        var data = window.arguments && window.arguments[0];
+        if (!data || !data.items) return;
+        var list = document.getElementById("pdf-checkboxes");
+        data.items.forEach(function (item) {
+          var cb = document.createXULElement
+            ? document.createXULElement("checkbox")
+            : document.createElement("checkbox");
+          cb.setAttribute("label", item.label);
+          cb.setAttribute("checked", item.checked ? "true" : "false");
+          cb.setAttribute("crop", "end");
+          cb.style.maxWidth = "600px";
+          cb._pdfIndex = item.index;
+          list.appendChild(cb);
+        });
+        this.updateCount();
+      },
+
+      boxes: function () {
+        return Array.prototype.slice.call(
+          document.getElementById("pdf-checkboxes").children
+        );
+      },
+
+      selectAll: function (yes) {
+        this.boxes().forEach(function (cb) { cb.checked = yes; });
+        this.updateCount();
+      },
+
+      updateCount: function () {
+        var boxes = this.boxes();
+        var n = boxes.filter(function (cb) { return cb.checked; }).length;
+        document.getElementById("pdf-selected-count").value =
+          "已选择 " + n + " / " + boxes.length + " 个 PDF";
+      },
+
+      accept: function () {
+        var data = window.arguments && window.arguments[0];
+        if (data) {
+          data.selected = this.boxes()
+            .filter(function (cb) { return cb.checked; })
+            .map(function (cb) { return cb._pdfIndex; });
+        }
+        return true;
+      }
+    };
+  ]]></script>
+
+  <vbox flex="1" style="padding: 12px;">
+    <description style="font-weight: 600; margin-bottom: 6px;">
+      发现多个 PDF，请选择要翻译的文件：
+    </description>
+    <hbox align="center">
+      <button label="全选" oncommand="PaperFlowPdfSelect.selectAll(true)" />
+      <button label="全不选" oncommand="PaperFlowPdfSelect.selectAll(false)" />
+      <spacer flex="1" />
+      <label id="pdf-selected-count" value="" />
+    </hbox>
+    <vbox
+      id="pdf-checkboxes"
+      flex="1"
+      style="overflow: auto; min-height: 240px; border: 1px solid #D7D7DC; border-radius: 6px; padding: 4px; margin-top: 8px;"
+    />
+  </vbox>
+</dialog>

@@ -1,3 +1,4 @@
+import { config } from "../../package.json";
 import { getString } from "../utils/locale";
 import { prefGet, prefSet } from "../utils/prefs";
 import { debugLog, debugLogPath } from "../utils/debug";
@@ -70,6 +71,49 @@ async function getSelectedPdfPaths(): Promise<PdfInfo[]> {
   return infos;
 }
 
+/**
+ * 选中项里含多个 PDF 时，先弹出勾选框让用户挑要翻译的文件。
+ * 对话框不可用（老版本 Zotero / openDialog 缺失）时回退为全部翻译，不影响原有功能。
+ */
+async function pickPdfsToTranslate(infos: PdfInfo[]): Promise<PdfInfo[]> {
+  if (infos.length <= 1) return infos;
+  const win = Zotero.getMainWindow() as any;
+  if (!win || typeof win.openDialog !== "function") {
+    debugLog("openDialog unavailable -> translate all PDFs");
+    return infos;
+  }
+  const items = infos.map((info, index) => {
+    const name = String(info.path || "").replace(/\\/g, "/").split("/").pop() || info.path;
+    let label = name;
+    try {
+      const att = info.itemID ? Zotero.Items.get(info.itemID) : null;
+      const parent = att && att.parentItemID ? Zotero.Items.get(att.parentItemID) : null;
+      const title = parent && parent.getField ? parent.getField("title") : "";
+      if (title) label = String(title).slice(0, 80) + " — " + name;
+    } catch (e) {
+      /* 取不到父条目标题就只显示文件名 */
+    }
+    return { index, label, checked: true };
+  });
+  const data: any = { items, selected: [] as number[] };
+  try {
+    win.openDialog(
+      `chrome://${config.addonRef}/content/pdf-select.xhtml`,
+      "_blank",
+      "chrome,modal,centerscreen,resizable",
+      data
+    );
+  } catch (e) {
+    debugLog("pickPdfsToTranslate dialog failed: " + e + " -> translate all");
+    return infos;
+  }
+  if (!Array.isArray(data.selected) || data.selected.length === 0) {
+    debugLog("pickPdfsToTranslate: nothing selected -> abort");
+    return [];
+  }
+  return data.selected.map((i: number) => infos[i]).filter(Boolean);
+}
+
 export async function triggerTranslate(
   format: string | null,
   auto: boolean,
@@ -86,10 +130,16 @@ export async function triggerTranslate(
       );
       return;
     }
-    // 多选条目 → 一次性把所有 PDF 及其附件 key 传给桌面端，由 App 批量翻译、
+    // 多于一个 PDF 时先让用户勾选（支持全选/全不选/单选几个）
+    const picked = await pickPdfsToTranslate(infos);
+    if (picked.length === 0) {
+      debugLog("=== triggerTranslate cancelled by user ===");
+      return;
+    }
+    // 多选条目 → 一次性把选中的 PDF 及其附件 key 传给桌面端，由 App 批量翻译、
     // 逐个回写；不再为每个 PDF 起一个进程（那样元数据会串位、还会反复抢占单实例）。
-    await launchPaperFlowBatch(infos, format, auto);
-    debugLog("=== triggerTranslate DONE count=" + infos.length + " ===");
+    await launchPaperFlowBatch(picked, format, auto);
+    debugLog("=== triggerTranslate DONE count=" + picked.length + " ===");
   } catch (e: any) {
     debugLog(
       "triggerTranslate EXCEPTION: " + e + " stack=" + (e && e.stack ? e.stack : "no-stack")
