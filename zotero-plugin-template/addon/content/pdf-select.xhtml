@@ -5,7 +5,7 @@
   id="paperflow-pdf-select"
   title="选择要翻译的 PDF"
   width="720"
-  height="540"
+  height="560"
   persist="width height screenX screenY"
   buttons="accept,cancel"
   buttonlabelaccept="确定翻译"
@@ -26,7 +26,7 @@
         var data = window.arguments && window.arguments[0];
         if (!data || !data.items) return;
         document.getElementById("pdf-hint").value =
-          "共找到 " + data.items.length + " 个 PDF，勾选要翻译的文件：";
+          "共找到 " + data.items.length + " 个 PDF，已自动排除已翻译和中文文件：";
         var list = document.getElementById("pdf-list");
         var self = this;
         data.items.forEach(function (item) {
@@ -48,7 +48,7 @@
             title.setAttribute("value", item.title);
             title.setAttribute("crop", "end");
             title.setAttribute("tooltiptext", item.title);
-            title.style.cssText = "font-size: 11px; color: #8E8E93; max-width: 560px;";
+            title.style.cssText = "font-size: 11px; color: #8E8E93; max-width: 520px;";
             textBox.appendChild(title);
           }
 
@@ -56,14 +56,23 @@
           file.setAttribute("value", item.filename);
           file.setAttribute("crop", "end");
           file.setAttribute("tooltiptext", item.filename);
-          file.style.cssText = "font-size: 13px; color: #1D1D1F; max-width: 560px;";
+          file.style.cssText = "font-size: 13px; color: #1D1D1F; max-width: 520px;";
           textBox.appendChild(file);
 
           row.appendChild(cb);
           row.appendChild(textBox);
+
+          if (item.skipReason) {
+            var tag = self.make("label");
+            tag.style.cssText = "margin-left: 10px; font-size: 11px; font-weight: 700; color: #FA8C16;";
+            tag.setAttribute("tooltiptext", item.skipReason === "translated"
+              ? "检测到同名译文文件或译文附件，默认跳过"
+              : "条目语言或文件名显示为中文，默认跳过");
+            row.appendChild(tag);
+          }
           list.appendChild(row);
         });
-        this.updateCount();
+        this.applyFilters();
       },
 
       boxes: function () {
@@ -73,16 +82,45 @@
         });
       },
 
+      applyFilters: function () {
+        var data = window.arguments && window.arguments[0];
+        if (!data) return;
+        var ft = document.getElementById("filter-translated").checked;
+        var fc = document.getElementById("filter-chinese").checked;
+        var rows = document.getElementById("pdf-list").children;
+        Array.prototype.slice.call(rows).forEach(function (row, i) {
+          var reason = data.items[i] && data.items[i].skipReason;
+          var cb = row.firstElementChild;
+          var tag = row.lastElementChild;
+          if (reason === "translated") {
+            cb.disabled = ft;
+            cb.checked = !ft;
+            if (tag) tag.value = ft ? "已翻译 · 跳过" : "已翻译 · 可选";
+          } else if (reason === "chinese") {
+            cb.disabled = fc;
+            cb.checked = !fc;
+            if (tag) tag.value = fc ? "已是中文 · 跳过" : "已是中文 · 可选";
+          }
+        });
+        this.updateCount();
+      },
+
       selectAll: function (yes) {
-        this.boxes().forEach(function (cb) { cb.checked = yes; });
+        this.boxes().forEach(function (cb) {
+          if (cb.disabled) {
+            cb.checked = false;
+            return;
+          }
+          cb.checked = yes;
+        });
         this.updateCount();
       },
 
       updateCount: function () {
         var boxes = this.boxes();
         var n = boxes.filter(function (cb) { return cb.checked; }).length;
-        var label = document.getElementById("pdf-selected-count");
-        label.value = "已选择 " + n + " / " + boxes.length + " 个 PDF";
+        document.getElementById("pdf-selected-count").value =
+          "已选择 " + n + " / " + boxes.length + " 个 PDF";
         try {
           var accept = document.documentElement.getButton("accept");
           if (accept) accept.disabled = n === 0;
@@ -101,15 +139,22 @@
     };
 
     document.addEventListener("command", function (e) {
-      if (e.target && e.target.id === "pdf-select-all") PaperFlowPdfSelect.selectAll(true);
-      if (e.target && e.target.id === "pdf-select-none") PaperFlowPdfSelect.selectAll(false);
-      if (e.target && e.target.tagName === "checkbox") PaperFlowPdfSelect.updateCount();
+      var id = e.target && e.target.id;
+      if (id === "pdf-select-all") PaperFlowPdfSelect.selectAll(true);
+      else if (id === "pdf-select-none") PaperFlowPdfSelect.selectAll(false);
+      else if (id === "filter-translated" || id === "filter-chinese") PaperFlowPdfSelect.applyFilters();
+      else if (e.target && e.target.tagName === "checkbox") PaperFlowPdfSelect.updateCount();
     }, false);
   ]]></script>
 
   <vbox flex="1" style="padding: 14px 16px;">
     <label style="font-size: 16px; font-weight: 700;">选择要翻译的 PDF</label>
-    <label id="pdf-hint" style="color: #6E6E73; margin-top: 3px; margin-bottom: 10px;" />
+    <label id="pdf-hint" style="color: #6E6E73; margin-top: 3px; margin-bottom: 8px;" />
+
+    <hbox align="center" style="margin-bottom: 8px;">
+      <checkbox id="filter-translated" label="跳过已翻译的 PDF" checked="true" />
+      <checkbox id="filter-chinese" label="跳过已是中文的 PDF" checked="true" style="margin-left: 14px;" />
+    </hbox>
 
     <hbox align="center" style="margin-bottom: 8px;">
       <button id="pdf-select-all" label="全选" style="min-width: 72px;" />

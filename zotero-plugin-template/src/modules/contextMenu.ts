@@ -14,6 +14,88 @@ import { launchPaperFlow, launchPaperFlowBatch, PaperFlowLaunchInfo } from "./la
 export interface PdfInfo extends PaperFlowLaunchInfo {
   path: string;
   itemID?: number;
+  filename?: string;
+  sourceTitle?: string;
+  /** 已翻译 / 已是中文 —— 弹窗里默认不勾选并标注 */
+  skipReason?: "translated" | "chinese";
+}
+
+const TRANSLATED_SUFFIXES = ["-mono", "-dual", "-side_by_side", "-translated"];
+
+function isTranslatedName(nameOrPath: string): boolean {
+  const name = String(nameOrPath || "").replace(/\\/g, "/").split("/").pop() || "";
+  return TRANSLATED_SUFFIXES.some(s => name.toLowerCase().endsWith(s + ".pdf"));
+}
+
+function isChineseLanguage(value: string): boolean {
+  const s = String(value || "").trim().toLowerCase();
+  return /^(zh|chi|zho|cmn|chinese|中文|汉语)/.test(s) || /中文|汉语|简体中文|繁体中文/.test(s);
+}
+
+async function hasTranslatedSibling(path: string): Promise<boolean> {
+  try {
+    const normalized = String(path || "").replace(/\\/g, "/");
+    const slash = normalized.lastIndexOf("/");
+    if (slash < 0) return false;
+    const dir = normalized.slice(0, slash);
+    const stem = normalized.slice(slash + 1).replace(/\.pdf$/i, "");
+    const io = (globalThis as any).IOUtils;
+    if (!io || typeof io.exists !== "function") return false;
+    for (const suffix of TRANSLATED_SUFFIXES) {
+      if (await io.exists(`${dir}/${stem}${suffix}.pdf`)) return true;
+    }
+  } catch (e) {
+    /* 无法检查同目录就当作没有 */
+  }
+  return false;
+}
+
+async function pdfInfoFromAttachment(att: any, parent: any): Promise<PdfInfo | null> {
+  if (!att || att.attachmentContentType !== "application/pdf") return null;
+  const p = await att.getFilePathAsync();
+  if (!p) return null;
+  const filename = String(p).replace(/\\/g, "/").split("/").pop() || String(p);
+  const info: PdfInfo = {
+    path: p,
+    key: att.key,
+    linkMode: att.attachmentLinkMode,
+    itemID: att.id,
+    filename,
+    sourceTitle: parent && parent.getField ? String(parent.getField("title") || "") : "",
+  };
+
+  const attTitle = att.getField ? String(att.getField("title") || "") : "";
+  // 译文附件本身不需要再翻译（可能是用户把译文一起选中了）
+  if (isTranslatedName(filename) || attTitle.startsWith("译文")) {
+    info.skipReason = "translated";
+    return info;
+  }
+  // 条目元数据标了中文，文件名是中文也当作中文 PDF
+  const lang = parent && parent.getField ? String(parent.getField("language") || "") : "";
+  if (isChineseLanguage(lang) || /[\u4e00-\u9fff]/.test(filename)) {
+    info.skipReason = "chinese";
+    return info;
+  }
+  // 同目录已有 -mono/-dual/-side_by_side 译文文件
+  if (await hasTranslatedSibling(p)) {
+    info.skipReason = "translated";
+    return info;
+  }
+  // imported 模式：译文在 Zotero storage 里，按附件标题「译文 · …」识别
+  try {
+    const siblings: number[] = parent && parent.getAttachments ? parent.getAttachments() : [];
+    for (const id of siblings) {
+      const sib = Zotero.Items.get(id);
+      const t = sib && sib.getField ? String(sib.getField("title") || "") : "";
+      if (t.startsWith("译文 ·")) {
+        info.skipReason = "translated";
+        break;
+      }
+    }
+  } catch (e) {
+    /* ignore */
+  }
+  return info;
 }
 
 
@@ -52,19 +134,17 @@ async function getSelectedPdfPaths(): Promise<PdfInfo[]> {
       item.isAttachment() &&
       item.attachmentContentType === "application/pdf"
     ) {
-      const p = await item.getFilePathAsync();
-      if (p) infos.push({ path: p, key: item.key, linkMode: item.attachmentLinkMode, itemID: item.id });
+      const parent = item.parentItemID ? Zotero.Items.get(item.parentItemID) : null;
+      const info = await pdfInfoFromAttachment(item, parent);
+      if (info) infos.push(info);
       continue;
     }
     // 普通文献条目：取它的 PDF 附件
     if (typeof item.isRegularItem === "function" && item.isRegularItem()) {
       const attIds = item.getAttachments();
       for (const attId of attIds) {
-        const att = Zotero.Items.get(attId);
-        if (att && att.attachmentContentType === "application/pdf") {
-          const p = await att.getFilePathAsync();
-          if (p) infos.push({ path: p, key: att.key, linkMode: att.attachmentLinkMode, itemID: att.id });
-        }
+        const info = await pdfInfoFromAttachment(Zotero.Items.get(attId), item);
+        if (info) infos.push(info);
       }
     }
   }
@@ -76,26 +156,28 @@ async function getSelectedPdfPaths(): Promise<PdfInfo[]> {
  * 对话框不可用（老版本 Zotero / openDialog 缺失）时回退为全部翻译，不影响原有功能。
  */
 async function pickPdfsToTranslate(infos: PdfInfo[]): Promise<PdfInfo[]> {
-  if (infos.length <= 1) return infos;
+  // 单个正常 PDF 直接翻译；单个被标记跳过的也弹窗，让用户看到原因并可强制翻译
+  if (infos.length === 0 || (infos.length === 1 && !infos[0].skipReason)) return infos;
   const win = Zotero.getMainWindow() as any;
   if (!win || typeof win.openDialog !== "function") {
-    debugLog("openDialog unavailable -> translate all PDFs");
-    return infos;
+    debugLog("openDialog unavailable -> skip filtered PDFs");
+    return infos.filter(i => !i.skipReason);
   }
-  const items = infos.map((info, index) => {
-    const name = String(info.path || "").replace(/\\/g, "/").split("/").pop() || info.path;
-    let title = "";
-    try {
-      const att = info.itemID ? Zotero.Items.get(info.itemID) : null;
-      const parent = att && att.parentItemID ? Zotero.Items.get(att.parentItemID) : null;
-      const t = parent && parent.getField ? parent.getField("title") : "";
-      if (t) title = String(t).slice(0, 100);
-    } catch (e) {
-      /* 取不到父条目标题就只显示文件名 */
-    }
-    return { index, title, filename: name, checked: true };
-  });
-  const data: any = { items, selected: [] as number[] };
+  const items = infos.map((info, index) => ({
+    index,
+    title: String(info.sourceTitle || "").slice(0, 100),
+    filename:
+      info.filename ||
+      String(info.path || "").replace(/\\/g, "/").split("/").pop() ||
+      info.path,
+    skipReason: info.skipReason || "",
+    checked: !info.skipReason,
+  }));
+  const data: any = {
+    items,
+    selected: [] as number[],
+    filters: { translated: true, chinese: true },
+  };
   try {
     win.openDialog(
       `chrome://${config.addonRef}/content/pdf-select.xhtml`,
