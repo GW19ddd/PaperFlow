@@ -84,16 +84,16 @@ async function pickPdfsToTranslate(infos: PdfInfo[]): Promise<PdfInfo[]> {
   }
   const items = infos.map((info, index) => {
     const name = String(info.path || "").replace(/\\/g, "/").split("/").pop() || info.path;
-    let label = name;
+    let title = "";
     try {
       const att = info.itemID ? Zotero.Items.get(info.itemID) : null;
       const parent = att && att.parentItemID ? Zotero.Items.get(att.parentItemID) : null;
-      const title = parent && parent.getField ? parent.getField("title") : "";
-      if (title) label = String(title).slice(0, 80) + " — " + name;
+      const t = parent && parent.getField ? parent.getField("title") : "";
+      if (t) title = String(t).slice(0, 100);
     } catch (e) {
       /* 取不到父条目标题就只显示文件名 */
     }
-    return { index, label, checked: true };
+    return { index, title, filename: name, checked: true };
   });
   const data: any = { items, selected: [] as number[] };
   try {
